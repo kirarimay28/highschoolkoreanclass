@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import { Avatar } from '@/components/common/Avatar';
 import { Icon } from '@/components/common/Icon';
@@ -8,6 +8,7 @@ import { Emblem } from '@/components/motifs/Emblem';
 import { appConfig } from '@/config/app';
 import { lobbyMenu } from '@/config/lobbyMenu';
 import { loginRoles, roleLabels } from '@/config/roles';
+import { countUnread } from '@/services/messageService';
 import type { User } from '@/types';
 import { cn } from '@/utils/format';
 
@@ -30,6 +31,12 @@ export function SideDrawer({ open, user, onClose, onLogout }: SideDrawerProps) {
       document.body.style.overflow = '';
     };
   }, [open, onClose]);
+
+  // 안 읽은 쪽지 수 (메뉴 배지)
+  const [unread, setUnread] = useState(0);
+  useEffect(() => {
+    if (open) countUnread(user).then(setUnread).catch(() => setUnread(0));
+  }, [open, user]);
 
   if (!open) return null;
   // 로비 카드로 나오는 항목은 서랍에서 빼서 중복을 없앰
@@ -92,7 +99,12 @@ export function SideDrawer({ open, user, onClose, onLogout }: SideDrawerProps) {
           {menu.map((m) => (
             <NavLink key={m.id} to={m.path} onClick={onClose} className={itemClass}>
               <IconTile icon={m.icon} tone={m.tone} size="sm" />
-              {m.title}
+              <span className="flex-1">{m.title}</span>
+              {m.id === 'messages' && unread > 0 && (
+                <span className="rounded-full bg-royal-light px-2 py-0.5 text-xs font-bold text-hanji" aria-label={`안 읽은 쪽지 ${unread}개`}>
+                  {unread}
+                </span>
+              )}
             </NavLink>
           ))}
         </nav>

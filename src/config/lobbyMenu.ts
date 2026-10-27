@@ -81,7 +81,6 @@ export const lobbyMenu: LobbyMenuItem[] = [
     icon: 'mail',
     tone: 'plum',
     path: '/messages',
-    showInLobby: true,
   },
   {
     id: 'board',
