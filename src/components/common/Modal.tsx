@@ -6,9 +6,11 @@ interface ModalProps {
   title: string;
   onClose: () => void;
   children: ReactNode;
+  /** 표 등 넓은 내용용 */
+  wide?: boolean;
 }
 
-export function Modal({ open, title, onClose, children }: ModalProps) {
+export function Modal({ open, title, onClose, children, wide }: ModalProps) {
   useEffect(() => {
     if (!open) return;
     const onKey = (e: KeyboardEvent) => e.key === 'Escape' && onClose();
@@ -24,7 +26,7 @@ export function Modal({ open, title, onClose, children }: ModalProps) {
         aria-modal="true"
         aria-label={title}
         onClick={(e) => e.stopPropagation()}
-        className="royal-card max-h-[90dvh] bg-hanji-card/95 w-full animate-fade-up overflow-y-auto rounded-b-none p-5 sm:max-w-lg sm:rounded-card sm:p-6"
+        className={`royal-card max-h-[90dvh] bg-hanji-card/95 w-full animate-fade-up overflow-y-auto rounded-b-none p-5 sm:rounded-card sm:p-6 ${wide ? 'sm:max-w-2xl' : 'sm:max-w-lg'}`}
       >
         <div className="mb-4 flex items-center justify-between">
           <h2 className="text-xl font-bold">{title}</h2>

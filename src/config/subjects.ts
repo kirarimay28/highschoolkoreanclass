@@ -8,6 +8,8 @@ export interface SubjectSection {
   title: string;
   description: string;
   icon: IconName;
+  /** 지정하면 카드가 열리는 페이지가 됨 (과목 주소 기준 상대 경로) */
+  path?: string;
 }
 
 /**
@@ -42,6 +44,7 @@ export const subjects: SubjectConfig[] = [
     // 연지(臙脂) — 붉은 꽃잎빛
     accent: { accent: '163 38 64', gold: '201 162 39', tint: '214 112 130' },
     sections: [
+      { id: 'timeline', title: '한국 문학 연대기 지도', description: '시대 × 갈래로 보는 고전 문학의 흐름과 영향 관계', icon: 'map', path: 'timeline' },
       { id: 'lessons', title: '수업 진도', description: '갈래별 작품과 차시별 학습 목표', icon: 'book' },
       { id: 'activities', title: '활동지', description: '작품 감상·비평 활동', icon: 'notebook' },
       { id: 'assignments', title: '과제', description: '감상문·창작 과제와 마감일', icon: 'todo' },

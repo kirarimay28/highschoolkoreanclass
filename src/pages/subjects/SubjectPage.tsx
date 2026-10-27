@@ -1,4 +1,4 @@
-import { Navigate, useParams } from 'react-router-dom';
+import { Link, Navigate, useParams } from 'react-router-dom';
 import { Badge } from '@/components/common/Badge';
 import { Icon } from '@/components/common/Icon';
 import { MedalPageHeader } from '@/components/layout/MedalPageHeader';
@@ -22,7 +22,25 @@ export function SubjectPage() {
       layoutId={subjectMedalLayoutId(subject.id)}
     >
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-        {subject.sections.map((sec) => (
+        {subject.sections.map((sec) =>
+          sec.path ? (
+            <Link
+              key={sec.id}
+              to={`/subject/${subject.id}/${sec.path}`}
+              className="royal-card group flex flex-col p-5 transition-all hover:-translate-y-0.5 hover:shadow-glow sm:col-span-2"
+            >
+              <div className="flex items-center gap-3">
+                <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-[rgb(var(--page-accent)/0.1)] text-[rgb(var(--page-accent))] ring-1 ring-inset ring-[rgb(var(--page-accent)/0.2)]">
+                  <Icon name={sec.icon} size={24} />
+                </span>
+                <div className="min-w-0 flex-1">
+                  <h2 className="text-xl font-bold group-hover:text-[rgb(var(--page-accent))]">{sec.title}</h2>
+                  <p className="text-sm text-ink-soft">{sec.description}</p>
+                </div>
+                <Icon name="back" size={20} className="rotate-180 text-[rgb(var(--page-accent))]" />
+              </div>
+            </Link>
+          ) : (
           <section key={sec.id} className="royal-card p-5">
             <div className="flex items-center justify-between gap-2">
               <div className="flex items-center gap-3">
@@ -38,7 +56,8 @@ export function SubjectPage() {
               {subject.name} {sec.title} 콘텐츠가 곧 채워질 예정입니다.
             </div>
           </section>
-        ))}
+          ),
+        )}
       </div>
     </MedalPageHeader>
   );

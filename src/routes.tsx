@@ -9,6 +9,7 @@ import { LobbyPage } from '@/pages/lobby/LobbyPage';
 import { LoginPage } from '@/pages/login/LoginPage';
 import { StudentManagePage } from '@/pages/students/StudentManagePage';
 import { StudyRoomPage } from '@/pages/studyroom/StudyRoomPage';
+import { TimelinePage } from '@/pages/subjects/literature/TimelinePage';
 import { SubjectPage } from '@/pages/subjects/SubjectPage';
 import { TutorialPage } from '@/pages/tutorial/TutorialPage';
 
@@ -21,6 +22,7 @@ export function AppRoutes() {
         <Route element={<AppLayout />}>
           <Route path="/lobby" element={<LobbyPage />} />
           <Route path="/subject/:subjectId" element={<SubjectPage />} />
+          <Route path="/subject/literature/timeline" element={<TimelinePage />} />
           {/* 예전 주소 호환 */}
           <Route path="/subjects" element={<Navigate to="/lobby?expand=subjects" replace />} />
           <Route path="/subjects/:subjectId" element={<LegacySubjectRedirect />} />
