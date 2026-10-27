@@ -21,7 +21,7 @@ export function PageHeader({ title, description, backTo = '/lobby', backLabel = 
       </Link>
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
-          <h1 className="text-2xl font-bold sm:text-3xl">{title}</h1>
+          <h1 className="title-gradient pb-1 text-3xl font-bold sm:text-4xl">{title}</h1>
           {description && <p className="mt-1 text-sm text-ink-soft sm:text-base">{description}</p>}
         </div>
         {actions && <div className="flex flex-wrap gap-2">{actions}</div>}

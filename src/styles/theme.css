@@ -30,6 +30,15 @@
   --color-indigo: 44 74 110;      /* #2C4A6E */
   --color-success: 62 110 72;     /* #3E6E48 */
 
+  /* 메뉴 아이콘 색(톤) — 아이콘 타일에 사용 */
+  --color-jade: 46 125 104;       /* #2E7D68 비취 */
+  --color-plum: 128 60 110;       /* #803C6E 자주 */
+
+  /* 유리(반투명) 카드 */
+  --glass-bg: 255 252 246;        /* 카드 바탕색 */
+  --glass-alpha: 0.62;            /* 카드 불투명도 (0~1) */
+  --glass-blur: 18px;             /* 뒤 배경 흐림 정도 */
+
   /* 폰트 */
   --font-serif: 'Gowun Batang', 'Nanum Myeongjo', serif;
   --font-sans: 'Pretendard Variable', Pretendard, 'Noto Sans KR', -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo',
@@ -37,9 +46,12 @@
 
   /* 둥글기 — 옷깃(둥근 깃) 곡선 */
   --radius-collar: 1.25rem 1.25rem 1.25rem 1.25rem / 1.6rem 1.6rem 1rem 1rem; /* 위가 더 둥근 옷깃 곡선 */
-  --radius-card: 1.25rem;
+  --radius-card: 1.5rem;
+  --radius-tile: 1.75rem;         /* 엠블럼·아이콘 타일 */
 
   /* 그림자 */
   --shadow-card: 0 1px 0 rgb(var(--color-gold) / 0.25), 0 8px 24px -12px rgb(var(--color-royal-deep) / 0.25);
+  --shadow-soft: 0 10px 40px -12px rgb(var(--color-royal) / 0.22), 0 2px 6px -2px rgb(var(--color-royal-deep) / 0.08);
+  --shadow-button: 0 8px 20px -8px rgb(var(--color-royal) / 0.55);
   --shadow-glow: 0 0 0 1px rgb(var(--color-gold) / 0.6), 0 0 18px rgb(var(--color-gold) / 0.35);
 }

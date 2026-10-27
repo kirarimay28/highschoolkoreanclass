@@ -74,7 +74,7 @@ export function BoardPostPage() {
         <h2 className="mb-3 text-lg font-bold">댓글 {post.comments.length}</h2>
         <ul className="space-y-2">
           {post.comments.map((c) => (
-            <li key={c.id} className="rounded-xl border border-gold/25 bg-hanji-card p-3.5">
+            <li key={c.id} className="rounded-2xl border border-white bg-white/60 p-3.5">
               <div className="flex items-center gap-2 text-sm">
                 <span className="font-semibold">{getAuthorDisplayName(c, user)}</span>
                 {c.authorRole !== 'student' && !c.anonymous && <Badge>{roleLabels[c.authorRole]}</Badge>}

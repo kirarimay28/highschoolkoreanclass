@@ -11,9 +11,21 @@
   body {
     @apply bg-hanji text-ink font-sans antialiased;
     min-height: 100dvh;
-    /* 아주 옅은 한지 섬유 질감 */
+    /* 한지 섬유 질감 + 대홍·금빛이 은은하게 번지는 그라데이션 */
+    background-attachment: fixed;
     background-image:
-      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.45 0 0 0 0 0.38 0 0 0 0 0.25 0 0 0 0.05 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.45 0 0 0 0 0.38 0 0 0 0 0.25 0 0 0 0.05 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),
+      radial-gradient(55% 45% at 18% 8%, rgb(var(--color-hanji-card)) 0%, transparent 70%),
+      radial-gradient(45% 55% at 92% 12%, rgb(var(--color-royal-light) / 0.16) 0%, transparent 70%),
+      radial-gradient(60% 55% at 80% 100%, rgb(var(--color-gold) / 0.22) 0%, transparent 70%),
+      radial-gradient(45% 45% at 0% 95%, rgb(var(--color-royal) / 0.1) 0%, transparent 70%);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
   }
   h1, h2, h3, h4 {
     @apply font-serif text-ink;
@@ -25,13 +37,26 @@
 }
 
 @layer components {
-  /* 금테 카드 */
+  /* 유리 카드 — 반투명 + 뒤 배경 흐림 + 옅은 금테 */
+  .glass {
+    background-color: rgb(var(--glass-bg) / var(--glass-alpha));
+    -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(1.2);
+    backdrop-filter: blur(var(--glass-blur)) saturate(1.2);
+  }
   .royal-card {
-    @apply rounded-card border border-gold/40 bg-hanji-card shadow-royal;
+    @apply glass rounded-card border border-white/80 shadow-soft;
+    box-shadow: var(--shadow-soft), inset 0 0 0 1px rgb(var(--color-gold) / 0.18);
+  }
+  /* 그라데이션 제목 글씨 */
+  .title-gradient {
+    background-image: linear-gradient(120deg, rgb(var(--color-royal-deep)) 0%, rgb(var(--color-royal-light)) 45%, rgb(var(--color-gold)) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
   }
   /* 입력창 */
   .royal-input {
-    @apply w-full rounded-xl border border-gold/40 bg-white/70 px-4 py-2.5 text-ink placeholder:text-ink-faint
+    @apply w-full rounded-2xl border border-white bg-white/75 px-4 py-2.5 text-ink placeholder:text-ink-faint
       transition focus:border-gold focus:outline-none focus:ring-2 focus:ring-gold/30;
   }
   .royal-label {

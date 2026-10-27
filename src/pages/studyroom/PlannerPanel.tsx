@@ -76,7 +76,7 @@ export function PlannerPanel() {
 
       <ul className="mt-4 space-y-2">
         {tasks.map((t) => (
-          <li key={t.id} className="flex items-center gap-3 rounded-xl border border-gold/25 bg-white/60 px-3 py-2.5">
+          <li key={t.id} className="flex items-center gap-3 rounded-2xl border border-white bg-white/60 px-3 py-2.5">
             <button
               type="button"
               onClick={async () => {

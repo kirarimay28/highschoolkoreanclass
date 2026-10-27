@@ -17,22 +17,23 @@ export interface RoyalButtonProps extends ButtonHTMLAttributes<HTMLButtonElement
 }
 
 const base =
-  'relative inline-flex items-center justify-center gap-2 font-medium rounded-collar border transition-all duration-200 ' +
-  'select-none disabled:cursor-not-allowed disabled:opacity-50 active:scale-[0.98] whitespace-nowrap';
+  'relative inline-flex items-center justify-center gap-2 font-semibold rounded-collar border transition-all duration-200 ' +
+  'select-none disabled:cursor-not-allowed disabled:opacity-50 enabled:active:scale-[0.98] whitespace-nowrap';
 
 const variants: Record<RoyalButtonVariant, string> = {
   primary:
-    'bg-royal text-hanji border-gold/70 shadow-[inset_0_0_0_1px_rgb(var(--color-gold)/0.25)] ' +
-    'hover:bg-royal-light hover:shadow-glow enabled:hover:border-gold',
+    'border-gold/50 bg-gradient-to-b from-royal-light to-royal text-hanji shadow-button ' +
+    'enabled:hover:-translate-y-px enabled:hover:border-gold enabled:hover:shadow-glow',
   secondary:
-    'bg-hanji-card text-royal border-gold/50 hover:border-gold hover:bg-white hover:shadow-glow',
-  ghost: 'bg-transparent text-royal border-transparent hover:bg-gold/10 hover:border-gold/30',
+    'glass border-white text-royal shadow-sm shadow-royal/5 ring-1 ring-inset ring-gold/20 ' +
+    'enabled:hover:ring-gold/50 enabled:hover:shadow-glow',
+  ghost: 'border-transparent bg-transparent text-royal enabled:hover:bg-royal/[0.06]',
 };
 
 const activeStyles: Record<RoyalButtonVariant, string> = {
-  primary: 'bg-royal-deep shadow-glow',
-  secondary: 'bg-royal text-hanji border-gold shadow-glow hover:bg-royal-light',
-  ghost: 'bg-gold/15 border-gold/40',
+  primary: 'shadow-glow',
+  secondary: 'bg-gradient-to-b from-royal-light to-royal text-hanji ring-gold/60 shadow-button',
+  ghost: 'bg-royal/10',
 };
 
 const sizes: Record<RoyalButtonSize, { button: string; icon: number }> = {

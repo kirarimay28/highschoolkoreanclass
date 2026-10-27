@@ -22,7 +22,7 @@ export function TabBar<T extends string>({ items, value, onChange, className, si
     <div
       role="tablist"
       className={cn(
-        'flex gap-1 overflow-x-auto rounded-collar border border-gold/40 bg-hanji-card/80 p-1 [scrollbar-width:none]',
+        'flex gap-1 overflow-x-auto glass rounded-collar border border-white p-1 shadow-sm ring-1 ring-inset ring-gold/15 [scrollbar-width:none]',
         className,
       )}
     >
@@ -39,7 +39,7 @@ export function TabBar<T extends string>({ items, value, onChange, className, si
               'flex flex-1 shrink-0 items-center justify-center gap-1 sm:gap-1.5 whitespace-nowrap rounded-collar font-medium transition-all',
               size === 'sm' ? 'px-3 py-1.5 text-sm' : 'px-2.5 py-2 text-[15px] sm:px-4',
               selected
-                ? 'bg-royal text-hanji shadow-[inset_0_0_0_1px_rgb(var(--color-gold)/0.6)]'
+                ? 'bg-gradient-to-b from-royal-light to-royal text-hanji shadow-button'
                 : 'text-ink-soft hover:bg-gold/10 hover:text-royal',
             )}
           >

@@ -18,13 +18,13 @@ export function Modal({ open, title, onClose, children }: ModalProps) {
 
   if (!open) return null;
   return (
-    <div className="fixed inset-0 z-50 flex items-end justify-center bg-ink/40 p-0 backdrop-blur-[2px] sm:items-center sm:p-4" onClick={onClose}>
+    <div className="fixed inset-0 z-50 flex items-end justify-center bg-ink/25 p-0 backdrop-blur-md sm:items-center sm:p-4" onClick={onClose}>
       <div
         role="dialog"
         aria-modal="true"
         aria-label={title}
         onClick={(e) => e.stopPropagation()}
-        className="royal-card max-h-[90dvh] w-full animate-fade-up overflow-y-auto rounded-b-none p-5 sm:max-w-lg sm:rounded-card sm:p-6"
+        className="royal-card max-h-[90dvh] bg-hanji-card/95 w-full animate-fade-up overflow-y-auto rounded-b-none p-5 sm:max-w-lg sm:rounded-card sm:p-6"
       >
         <div className="mb-4 flex items-center justify-between">
           <h2 className="text-xl font-bold">{title}</h2>

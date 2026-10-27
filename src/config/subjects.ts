@@ -1,4 +1,5 @@
 import type { IconName } from '@/components/common/icons';
+import type { Tone } from '@/components/common/IconTile';
 import type { SubjectId } from '@/types';
 
 export interface SubjectConfig {
@@ -7,6 +8,7 @@ export interface SubjectConfig {
   hanja: string;
   description: string;
   icon: IconName;
+  tone: Tone;
 }
 
 /** 과목 목록 — 과목 선택 화면, 과목 탭, 도서관 분류에서 공통으로 사용 */
@@ -17,6 +19,7 @@ export const subjects: SubjectConfig[] = [
     hanja: '文學',
     description: '시·소설·수필·극으로 삶을 읽어요',
     icon: 'feather',
+    tone: 'royal',
   },
   {
     id: 'reading-writing',
@@ -24,6 +27,7 @@ export const subjects: SubjectConfig[] = [
     hanja: '讀書',
     description: '깊이 읽고 논리적으로 써요',
     icon: 'notebook',
+    tone: 'indigo',
   },
   {
     id: 'speech-language',
@@ -31,6 +35,7 @@ export const subjects: SubjectConfig[] = [
     hanja: '話法',
     description: '말하기와 우리말의 원리를 탐구해요',
     icon: 'mic',
+    tone: 'jade',
   },
 ];
 

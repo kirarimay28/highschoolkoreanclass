@@ -92,7 +92,7 @@ export function CalendarPanel() {
 
       <aside className="royal-card p-5">
         <h3 className="font-serif text-lg font-bold">{formatDateLabel(selected)}</h3>
-        <div className="mt-3 rounded-xl border border-gold/30 bg-white/60 p-3 text-center">
+        <div className="mt-3 rounded-2xl border border-white bg-white/60 p-3 text-center">
           <p className="text-xs text-ink-soft">공부 시간</p>
           <p className="font-serif text-2xl font-bold text-royal">{formatDuration(selectedSeconds)}</p>
         </div>

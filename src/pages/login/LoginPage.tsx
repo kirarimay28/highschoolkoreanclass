@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Navigate, useLocation, useNavigate } from 'react-router-dom';
 import { Icon } from '@/components/common/Icon';
+import { BackgroundDecor } from '@/components/motifs/BackgroundDecor';
 import { CloudDivider } from '@/components/motifs/CloudDivider';
 import { Emblem } from '@/components/motifs/Emblem';
 import { appConfig } from '@/config/app';
@@ -28,24 +29,26 @@ export function LoginPage() {
   const current = loginRoles.find((r) => r.id === role);
 
   return (
-    <div className="cloud-pattern relative flex min-h-dvh flex-col items-center px-4 pb-10">
-      {/* 상단 대홍 띠 */}
-      <div className="absolute inset-x-0 top-0 h-36 bg-royal sm:h-44">
-        <div className="absolute inset-x-0 bottom-0 h-[3px] bg-gradient-to-r from-gold-dark via-gold-light to-gold-dark" />
+    <div className="relative isolate flex min-h-dvh flex-col items-center px-4 pb-12">
+      <BackgroundDecor />
+
+      {/* 엠블럼 · 제목 */}
+      <div className="mt-12 flex animate-fade-up flex-col items-center text-center sm:mt-16">
+        <span className="glass flex h-28 w-28 items-center justify-center rounded-tile border border-white shadow-soft sm:h-32 sm:w-32">
+          <Emblem size={84} animated />
+        </span>
+        <h1 className="title-gradient mt-6 pb-1 text-5xl font-bold tracking-tight drop-shadow-[0_6px_18px_rgb(var(--color-royal)/0.18)] sm:text-6xl">
+          {appConfig.name}
+        </h1>
+        <p className="mt-1 font-serif text-sm tracking-[0.4em] text-gold-dark">{appConfig.hanja}</p>
+        <span className="my-3 h-1.5 w-1.5 rounded-full bg-royal-light/70" aria-hidden />
+        <p className="text-[15px] font-medium tracking-[0.15em] text-royal/80">{appConfig.slogan}</p>
       </div>
 
-      <div className="relative z-10 mt-10 flex flex-col items-center text-center sm:mt-14">
-        <div className="rounded-full bg-hanji p-1.5 shadow-glow">
-          <Emblem size={120} animated />
-        </div>
-        <h1 className="mt-4 text-3xl font-bold sm:text-4xl">{appConfig.name}</h1>
-        <p className="mt-1 font-serif text-sm tracking-[0.3em] text-gold-dark">{appConfig.hanja}</p>
-        <p className="mt-1 text-sm text-ink-soft">{appConfig.subtitle}</p>
-      </div>
-
-      <div className="relative z-10 mt-6 w-full max-w-xl">
-        {/* 역할 선택 */}
-        <div className="grid gap-2 sm:gap-3" style={{ gridTemplateColumns: `repeat(${loginRoles.length}, minmax(0, 1fr))` }}>
+      {/* 역할 선택 + 입력 폼 */}
+      <section className="royal-card mt-8 w-full max-w-lg p-4 sm:p-6">
+        <p className="mb-3 text-center text-sm text-ink-soft">{appConfig.subtitle} · 역할을 골라 입장하세요</p>
+        <div className="grid gap-2" style={{ gridTemplateColumns: `repeat(${loginRoles.length}, minmax(0, 1fr))` }}>
           {loginRoles.map((r) => {
             const selected = r.id === role;
             return (
@@ -55,31 +58,30 @@ export function LoginPage() {
                 onClick={() => setRole(r.id)}
                 aria-pressed={selected}
                 className={cn(
-                  'flex flex-col items-center gap-1.5 rounded-collar border px-2 py-3 transition-all duration-200 sm:py-4',
+                  'flex flex-col items-center gap-1 rounded-2xl border px-2 py-3 transition-all duration-200',
                   selected
-                    ? 'border-gold bg-royal text-hanji shadow-glow'
-                    : 'border-gold/40 bg-hanji-card text-royal hover:border-gold hover:shadow-glow',
+                    ? 'border-gold/60 bg-gradient-to-b from-royal-light to-royal text-hanji shadow-button'
+                    : 'border-white bg-white/60 text-royal hover:bg-white hover:shadow-glow',
                 )}
               >
                 <Icon name={r.icon} size={22} />
-                <span className="font-serif text-[15px] font-bold sm:text-base">{r.label}</span>
+                <span className="font-serif text-[15px] font-bold">{r.label}</span>
               </button>
             );
           })}
         </div>
 
-        {/* 입력 폼 */}
-        <section key={role} className="royal-card mt-4 animate-fade-up p-5 sm:p-7">
+        <div key={role} className="mt-5 animate-fade-up rounded-card bg-white/50 p-4 ring-1 ring-inset ring-white sm:p-5">
           {current && (
             <>
-              <h2 className="text-center text-xl font-bold">{current.label} 입장</h2>
-              <p className="mt-1 text-center text-sm text-ink-soft">{current.description}</p>
+              <h2 className="text-center text-lg font-bold text-royal-deep">{current.label} 입장</h2>
+              <p className="mt-0.5 text-center text-sm text-ink-soft">{current.description}</p>
               <CloudDivider className="my-4" />
             </>
           )}
           <Form onSuccess={handleSuccess} />
-        </section>
-      </div>
+        </div>
+      </section>
     </div>
   );
 }

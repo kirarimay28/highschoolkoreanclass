@@ -33,6 +33,8 @@ export default {
         },
         indigo: { DEFAULT: withAlpha('indigo') },
         success: withAlpha('success'),
+        jade: withAlpha('jade'),
+        plum: withAlpha('plum'),
       },
       fontFamily: {
         serif: 'var(--font-serif)',
@@ -41,10 +43,13 @@ export default {
       borderRadius: {
         collar: 'var(--radius-collar)',
         card: 'var(--radius-card)',
+        tile: 'var(--radius-tile)',
       },
       boxShadow: {
         royal: 'var(--shadow-card)',
         glow: 'var(--shadow-glow)',
+        soft: 'var(--shadow-soft)',
+        button: 'var(--shadow-button)',
       },
       keyframes: {
         shake: {
@@ -66,12 +71,22 @@ export default {
         'slow-spin': {
           to: { transform: 'rotate(360deg)' },
         },
+        drift: {
+          '0%, 100%': { transform: 'translateX(0)' },
+          '50%': { transform: 'translateX(18px)' },
+        },
+        'slide-in': {
+          '0%': { transform: 'translateX(-100%)' },
+          '100%': { transform: 'translateX(0)' },
+        },
       },
       animation: {
         shake: 'shake 0.45s ease-in-out',
         'fade-up': 'fade-up 0.35s ease-out both',
         sparkle: 'sparkle 1.4s ease-out forwards',
         'slow-spin': 'slow-spin 60s linear infinite',
+        drift: 'drift 14s ease-in-out infinite',
+        'slide-in': 'slide-in 0.28s cubic-bezier(0.2, 0.8, 0.2, 1)',
       },
     },
   },

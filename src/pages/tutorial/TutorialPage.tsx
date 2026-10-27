@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Icon } from '@/components/common/Icon';
+import { IconTile } from '@/components/common/IconTile';
 import { RoyalButton } from '@/components/common/RoyalButton';
 import { PageHeader } from '@/components/layout/PageHeader';
 import { tutorialSteps } from '@/data/tutorial.data';
@@ -29,9 +29,7 @@ export function TutorialPage() {
       </div>
 
       <article key={step.id} className="royal-card animate-fade-up p-6 text-center sm:p-10">
-        <span className="mx-auto flex h-16 w-16 items-center justify-center rounded-full border-2 border-gold bg-royal text-gold-light">
-          <Icon name={step.icon} size={28} />
-        </span>
+        <IconTile icon={step.icon} tone="royal" size="lg" className="mx-auto" />
         <p className="mt-4 font-serif text-sm text-gold-dark">
           {index + 1} / {tutorialSteps.length}
         </p>
