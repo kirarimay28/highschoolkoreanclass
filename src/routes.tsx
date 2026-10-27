@@ -1,4 +1,4 @@
-import { Navigate, Route, Routes, useParams } from 'react-router-dom';
+import { Navigate, Route, Routes, useParams, useSearchParams } from 'react-router-dom';
 import { AppLayout } from '@/components/layout/AppLayout';
 import { ProtectedRoute } from '@/components/layout/ProtectedRoute';
 import { BoardPage } from '@/pages/board/BoardPage';
@@ -24,7 +24,8 @@ export function AppRoutes() {
           {/* 예전 주소 호환 */}
           <Route path="/subjects" element={<Navigate to="/lobby?expand=subjects" replace />} />
           <Route path="/subjects/:subjectId" element={<LegacySubjectRedirect />} />
-          <Route path="/studyroom" element={<StudyRoomPage />} />
+          <Route path="/studyroom/:toolId" element={<StudyRoomPage />} />
+          <Route path="/studyroom" element={<LegacyStudyroomRedirect />} />
           <Route path="/board" element={<BoardPage />} />
           <Route path="/board/:postId" element={<BoardPostPage />} />
           <Route path="/library" element={<LibraryPage />} />
@@ -41,4 +42,11 @@ export function AppRoutes() {
 function LegacySubjectRedirect() {
   const { subjectId } = useParams();
   return <Navigate to={`/subject/${subjectId}`} replace />;
+}
+
+/** /studyroom, 예전 /studyroom?tab=timer 주소 호환 */
+function LegacyStudyroomRedirect() {
+  const [params] = useSearchParams();
+  const tab = params.get('tab');
+  return <Navigate to={tab ? `/studyroom/${tab}` : '/lobby?expand=studyroom'} replace />;
 }

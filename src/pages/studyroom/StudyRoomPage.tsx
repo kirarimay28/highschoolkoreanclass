@@ -1,32 +1,37 @@
-import { useSearchParams } from 'react-router-dom';
-import { TabBar } from '@/components/common/TabBar';
-import { PageHeader } from '@/components/layout/PageHeader';
-import { studyroomTabs, type StudyroomTab } from '@/config/studyroom';
+import { Navigate, useParams } from 'react-router-dom';
+import { MedalPageHeader } from '@/components/layout/MedalPageHeader';
+import { getStudyroomTool, studyroomMedalLayoutId, type StudyroomToolId } from '@/config/studyroom';
 import { CalendarPanel } from './CalendarPanel';
 import { PlannerPanel } from './PlannerPanel';
 import { RankingPanel } from './RankingPanel';
 import { TimerPanel } from './TimerPanel';
 
-const panels: Record<StudyroomTab['id'], () => JSX.Element> = {
+const panels: Record<StudyroomToolId, () => JSX.Element> = {
   planner: PlannerPanel,
   timer: TimerPanel,
   ranking: RankingPanel,
   calendar: CalendarPanel,
 };
 
+/** 스터디룸 도구별 독립 페이지 (/studyroom/:toolId) */
 export function StudyRoomPage() {
-  const [params, setParams] = useSearchParams();
-  const tabParam = params.get('tab');
-  const tab = studyroomTabs.find((t) => t.id === tabParam)?.id ?? studyroomTabs[0].id;
-  const Panel = panels[tab];
+  const { toolId } = useParams();
+  const tool = getStudyroomTool(toolId);
+  if (!tool) return <Navigate to="/lobby?expand=studyroom" replace />;
+  const Panel = panels[tool.id];
 
   return (
-    <div>
-      <PageHeader title="온라인 스터디룸" description="계획하고, 집중하고, 기록하며 스스로 성장해요." />
-      <TabBar items={studyroomTabs} value={tab} onChange={(id) => setParams({ tab: id }, { replace: true })} className="mx-auto mb-6 max-w-2xl" />
-      <div key={tab} className="animate-fade-up">
-        <Panel />
-      </div>
-    </div>
+    <MedalPageHeader
+      backTo="/lobby?expand=studyroom"
+      backLabel="온라인 스터디룸"
+      icon={tool.icon}
+      title={tool.label}
+      hanja={tool.hanja}
+      description={tool.description}
+      accent={tool.accent}
+      layoutId={studyroomMedalLayoutId(tool.id)}
+    >
+      <Panel />
+    </MedalPageHeader>
   );
 }

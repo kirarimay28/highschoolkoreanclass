@@ -1,6 +1,7 @@
 import type { IconName } from '@/components/common/icons';
 import type { Tone } from '@/components/common/IconTile';
 import type { Role } from '@/types';
+import { studyroomMedalLayoutId, studyroomPath, studyroomTools } from './studyroom';
 import { subjectMedalLayoutId, subjectPath, subjects, type SubjectAccent } from './subjects';
 
 export interface LobbySubItem {
@@ -63,6 +64,15 @@ export const lobbyMenu: LobbyMenuItem[] = [
     tone: 'gold',
     path: '/studyroom',
     showInLobby: true,
+    children: studyroomTools.map((t) => ({
+      id: t.id,
+      title: t.label,
+      description: t.description,
+      icon: t.icon,
+      path: studyroomPath(t.id),
+      colors: t.accent,
+      layoutId: studyroomMedalLayoutId(t.id),
+    })),
   },
   {
     id: 'board',

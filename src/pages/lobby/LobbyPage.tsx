@@ -114,7 +114,11 @@ export function LobbyPage() {
 
       {/* 하위 선택지: 선택한 메달에서 튀어나와 펼쳐짐 */}
       {expandedChildren && (
-        <div className="mt-2 flex flex-wrap justify-center gap-x-3 gap-y-1 sm:mt-4 sm:gap-x-8" role="group" aria-label={`${selected?.title} 하위 메뉴`}>
+        <div
+          className={`mt-2 justify-center gap-x-3 gap-y-1 sm:mt-4 sm:flex sm:flex-wrap sm:gap-x-8 ${
+            expandedChildren.length === 4 ? 'mx-auto grid max-w-[260px] grid-cols-2 justify-items-center sm:max-w-none' : 'flex flex-wrap'
+          }`}
+          role="group" aria-label={`${selected?.title} 하위 메뉴`}>
           {expandedChildren.map((child, i) => (
             <PopOut key={child.id} origin={origin} index={i} reduce={reduce}>
               <MedallionButton

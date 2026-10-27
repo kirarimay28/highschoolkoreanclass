@@ -1,7 +1,7 @@
-import type { CSSProperties } from 'react';
 import type { IconName } from '@/components/common/icons';
 import type { Tone } from '@/components/common/IconTile';
 import type { SubjectId } from '@/types';
+import type { PageAccent } from '@/utils/accent';
 
 export interface SubjectSection {
   id: string;
@@ -16,11 +16,7 @@ export interface SubjectSection {
  *  - gold:   메달 금테·강조선
  *  - tint:   배경에 아주 옅게 번지는 색
  */
-export interface SubjectAccent {
-  accent: string;
-  gold: string;
-  tint: string;
-}
+export type SubjectAccent = PageAccent;
 
 export interface SubjectConfig {
   id: SubjectId;
@@ -92,15 +88,6 @@ export function getSubject(id: string | undefined): SubjectConfig | undefined {
 
 /** 과목 페이지 주소 */
 export const subjectPath = (id: SubjectId) => `/subject/${id}`;
-
-/** 메달 등 화면 요소를 과목 색으로 칠하기 위한 CSS 변수 */
-export function subjectStyle(subject: SubjectConfig): CSSProperties {
-  return {
-    '--subject-accent': subject.accent.accent,
-    '--subject-gold': subject.accent.gold,
-    '--subject-tint': subject.accent.tint,
-  } as CSSProperties;
-}
 
 /** 로비 → 과목 페이지로 이어지는 메달 전환용 layoutId */
 export const subjectMedalLayoutId = (id: SubjectId) => `subject-medal-${id}`;
