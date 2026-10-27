@@ -12,10 +12,8 @@ npm run build      # 타입 검사 + 프로덕션 빌드 (dist/)
 npm run preview    # 빌드 결과 미리보기
 ```
 
-**배포**
-- Vercel: 저장소를 Vercel 에 연결하면 푸시할 때마다 자동 배포됩니다 (`vercel.json` 에 설정 완료).
-- GitHub Pages: 기본 브랜치 푸시 시 자동 배포 (`.github/workflows/deploy.yml`)
-  주소: https://kirarimay28.github.io/highschoolkoreanclass/
+**배포:** `main` 브랜치에 푸시하면 Vercel 이 자동으로 배포합니다 (`vercel.json`).
+주소: https://highschoolkoreanclass.vercel.app
 
 ```bash
 ```
