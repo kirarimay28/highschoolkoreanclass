@@ -9,7 +9,7 @@ import { can } from '@/config/permissions';
 import { roleLabels } from '@/config/roles';
 import { useCurrentUser } from '@/context/AuthContext';
 import { addComment, deleteComment, deletePost, getPost } from '@/services/boardService';
-import { getAuthorDisplayName } from '@/services/boardVisibility';
+import { getAuthorDisplayName, isOwnedBy } from '@/services/boardVisibility';
 import { formatDateTime } from '@/utils/date';
 import { useAsyncData } from '@/utils/useAsyncData';
 import { VisibilityToggle } from './VisibilityToggle';
@@ -32,7 +32,7 @@ export function BoardPostPage() {
   }
   if (!post) return null;
 
-  const canDeletePost = post.authorId === user.id || can(user.role, 'moderateBoard');
+  const canDeletePost = isOwnedBy(post, user) || can(user.role, 'moderateBoard');
 
   const submit = async (e: FormEvent) => {
     e.preventDefault();
@@ -79,7 +79,7 @@ export function BoardPostPage() {
                 <span className="font-semibold">{getAuthorDisplayName(c, user)}</span>
                 {c.authorRole !== 'student' && !c.anonymous && <Badge>{roleLabels[c.authorRole]}</Badge>}
                 <span className="text-xs text-ink-faint">{formatDateTime(c.createdAt)}</span>
-                {(c.authorId === user.id || can(user.role, 'moderateBoard')) && (
+                {(isOwnedBy(c, user) || can(user.role, 'moderateBoard')) && (
                   <button
                     type="button"
                     className="ml-auto text-xs text-ink-faint hover:text-royal"

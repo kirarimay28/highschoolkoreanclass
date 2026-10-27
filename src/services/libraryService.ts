@@ -1,5 +1,7 @@
 import { LIBRARY_INLINE_LIMIT } from '@/config/library';
 import type { LibraryFile, SubjectId, User } from '@/types';
+import { isRemoteBackend } from '@/config/backend';
+import * as remote from './remote/libraryRemote';
 import { STORAGE_KEYS, createId, readJSON, resolve, writeJSON } from './storage';
 
 /**
@@ -19,10 +21,11 @@ const load = () => readJSON<StoredLibraryFile[]>(STORAGE_KEYS.library, []);
 const save = (files: StoredLibraryFile[]) => writeJSON(STORAGE_KEYS.library, files);
 const strip = ({ dataUrl: _omit, ...file }: StoredLibraryFile): LibraryFile => file;
 
-export function listFiles(filter: { subjectId?: SubjectId | 'all'; query?: string } = {}): Promise<LibraryFile[]> {
+export async function listFiles(filter: { subjectId?: SubjectId | 'all'; query?: string } = {}): Promise<LibraryFile[]> {
   const q = filter.query?.trim().toLowerCase();
-  return resolve(
-    load()
+  const source: StoredLibraryFile[] = isRemoteBackend ? await remote.listFiles(filter.subjectId) : load();
+  return (
+    source
       .filter((f) => !filter.subjectId || filter.subjectId === 'all' || f.subjectId === filter.subjectId)
       .filter(
         (f) =>
@@ -32,7 +35,7 @@ export function listFiles(filter: { subjectId?: SubjectId | 'all'; query?: strin
           (f.description ?? '').toLowerCase().includes(q),
       )
       .sort((a, b) => b.uploadedAt - a.uploadedAt)
-      .map(strip),
+      .map(strip)
   );
 }
 
@@ -52,7 +55,8 @@ export interface UploadInput {
   file: File;
 }
 
-export async function uploadFile(user: User, input: UploadInput): Promise<LibraryFile> {
+export async function uploadFile(user: User, input: UploadInput): Promise<LibraryFile | void> {
+  if (isRemoteBackend) return remote.uploadFile(user, input);
   const { file } = input;
   const id = createId('f_');
   const record: StoredLibraryFile = {
@@ -81,6 +85,7 @@ export async function uploadFile(user: User, input: UploadInput): Promise<Librar
 }
 
 export function deleteFile(id: string): Promise<void> {
+  if (isRemoteBackend) return remote.deleteFile(id);
   sessionBlobs.delete(id);
   save(load().filter((f) => f.id !== id));
   return resolve(undefined);
@@ -88,6 +93,7 @@ export function deleteFile(id: string): Promise<void> {
 
 /** 내려받기 URL. 실제 파일이 없으면 안내용 텍스트 파일을 만들어 돌려줍니다. */
 export function getDownloadUrl(id: string): Promise<{ url: string; fileName: string; isPlaceholder: boolean } | null> {
+  if (isRemoteBackend) return remote.getDownloadUrl(id);
   const record = load().find((f) => f.id === id);
   if (!record) return resolve(null);
   const blob = sessionBlobs.get(id);

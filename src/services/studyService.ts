@@ -1,6 +1,8 @@
 import type { RankingPeriod } from '@/config/studyroom';
 import type { StudyRecord, User } from '@/types';
 import { todayKey, weekKeys } from '@/utils/date';
+import { isRemoteBackend } from '@/config/backend';
+import * as remote from './remote/studyRemote';
 import { STORAGE_KEYS, readJSON, resolve, writeJSON } from './storage';
 
 const load = () => readJSON<StudyRecord[]>(STORAGE_KEYS.studyRecords, []);
@@ -9,6 +11,7 @@ const save = (records: StudyRecord[]) => writeJSON(STORAGE_KEYS.studyRecords, re
 /** 타이머가 측정한 시간을 해당 날짜 기록에 누적 */
 export function addStudySeconds(user: User, seconds: number, date = todayKey()): Promise<void> {
   if (seconds <= 0) return resolve(undefined);
+  if (isRemoteBackend) return remote.addStudySeconds(user, seconds, date);
   const records = load();
   const existing = records.find((r) => r.userId === user.id && r.date === date);
   if (existing) {
@@ -21,14 +24,15 @@ export function addStudySeconds(user: User, seconds: number, date = todayKey()):
   return resolve(undefined);
 }
 
-export function getStudySeconds(userId: string, date: string): Promise<number> {
+export async function getStudySeconds(userId: string, date: string): Promise<number> {
+  if (isRemoteBackend) return (await remote.listRecordsByUser(userId)).find((r) => r.date === date)?.seconds ?? 0;
   return resolve(load().find((r) => r.userId === userId && r.date === date)?.seconds ?? 0);
 }
 
 /** 캘린더용: 날짜 → 초 */
-export function getStudyMap(userId: string): Promise<Record<string, number>> {
+export async function getStudyMap(userId: string): Promise<Record<string, number>> {
   const map: Record<string, number> = {};
-  load()
+  (isRemoteBackend ? await remote.listRecordsByUser(userId) : load())
     .filter((r) => r.userId === userId)
     .forEach((r) => (map[r.date] = r.seconds));
   return resolve(map);
@@ -41,10 +45,10 @@ export interface RankingEntry {
   rank: number;
 }
 
-export function getRanking(period: RankingPeriod): Promise<RankingEntry[]> {
+export async function getRanking(period: RankingPeriod): Promise<RankingEntry[]> {
   const dates = new Set(period === 'daily' ? [todayKey()] : weekKeys());
   const totals = new Map<string, { userName: string; seconds: number }>();
-  load()
+  (isRemoteBackend ? await remote.listRecordsByDates([...dates]) : load())
     .filter((r) => dates.has(r.date))
     .forEach((r) => {
       const cur = totals.get(r.userId) ?? { userName: r.userName, seconds: 0 };
@@ -58,12 +62,10 @@ export function getRanking(period: RankingPeriod): Promise<RankingEntry[]> {
   // 동점자는 같은 순위
   let lastSeconds = -1;
   let lastRank = 0;
-  return resolve(
-    sorted.map((e, i) => {
-      const rank = e.seconds === lastSeconds ? lastRank : i + 1;
-      lastSeconds = e.seconds;
-      lastRank = rank;
-      return { ...e, rank };
-    }),
-  );
+  return sorted.map((e, i) => {
+    const rank = e.seconds === lastSeconds ? lastRank : i + 1;
+    lastSeconds = e.seconds;
+    lastRank = rank;
+    return { ...e, rank };
+  });
 }

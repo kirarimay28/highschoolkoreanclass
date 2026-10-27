@@ -48,6 +48,8 @@ export interface BoardComment {
   anonymous: boolean;
   content: string;
   createdAt: number;
+  /** 서버가 작성자 정보를 가린 익명 댓글에서 "내 댓글"인지 */
+  isMine?: boolean;
 }
 
 export interface BoardPost {
@@ -61,6 +63,10 @@ export interface BoardPost {
   anonymous: boolean;
   createdAt: number;
   comments: BoardComment[];
+  /** 목록 화면용 댓글 수 (서버 목록은 댓글 본문 없이 개수만 옴) */
+  commentCount?: number;
+  /** 서버가 작성자 정보를 가린 익명 글에서 "내 글"인지 */
+  isMine?: boolean;
 }
 
 // ── 도서관 ──
@@ -74,6 +80,8 @@ export interface LibraryFile {
   size: number; // bytes
   uploaderName: string;
   uploadedAt: number;
+  /** Supabase Storage 안의 파일 위치 */
+  storagePath?: string;
 }
 
 // ── 고쳐주세요 ──

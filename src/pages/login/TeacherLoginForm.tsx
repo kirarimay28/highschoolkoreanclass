@@ -1,5 +1,6 @@
 import { useState, type FormEvent } from 'react';
 import { RoyalButton } from '@/components/common/RoyalButton';
+import { isRemoteBackend } from '@/config/backend';
 import { loginTeacher } from '@/services/authService';
 import type { LoginFormProps } from './loginForms';
 
@@ -25,12 +26,13 @@ export function TeacherLoginForm({ onSuccess }: LoginFormProps) {
   return (
     <form onSubmit={submit} className="space-y-4">
       <div>
-        <label className="royal-label" htmlFor="staffId">교직원 ID</label>
+        <label className="royal-label" htmlFor="staffId">{isRemoteBackend ? '이메일' : '교직원 ID'}</label>
         <input
           id="staffId"
+          type={isRemoteBackend ? 'email' : 'text'}
           className="royal-input"
           autoComplete="username"
-          placeholder="예: teacher01"
+          placeholder={isRemoteBackend ? '예: teacher@school.kr' : '예: teacher01'}
           value={staffId}
           onChange={(e) => setStaffId(e.target.value)}
           required

@@ -1,6 +1,8 @@
 import { professorAccount } from '@/config/professorQuiz';
 import { teachersMock } from '@/data/teachers.mock';
 import type { User } from '@/types';
+import { isRemoteBackend } from '@/config/backend';
+import * as remote from './remote/authRemote';
 import { describeStudentId, findStudent } from './rosterService';
 import { STORAGE_KEYS, readJSON, removeKey, writeJSON } from './storage';
 
@@ -19,7 +21,7 @@ function saveSession(user: User): User {
 
 /** 학생: 선생님이 등록한 이름 + 학번이 모두 맞아야 입장 */
 export async function loginStudent(name: string, studentId: string): Promise<User> {
-  const student = findStudent(name, studentId);
+  const student = await findStudent(name, studentId);
   if (!student) {
     throw new AuthError('등록된 학생을 찾을 수 없어요. 이름과 학번을 확인하고, 그래도 안 되면 선생님께 등록을 요청하세요.');
   }
@@ -31,7 +33,15 @@ export async function loginStudent(name: string, studentId: string): Promise<Use
   });
 }
 
+/** 선생님: Supabase 사용 시 이메일+비밀번호, 아니면 mock 교직원 ID */
 export async function loginTeacher(staffId: string, password: string): Promise<User> {
+  if (isRemoteBackend) {
+    try {
+      return saveSession(await remote.signInTeacher(staffId, password));
+    } catch (err) {
+      throw new AuthError((err as Error).message);
+    }
+  }
   const teacher = teachersMock.find((t) => t.staffId === staffId.trim());
   if (!teacher || teacher.password !== password) {
     throw new AuthError('교직원 ID 또는 비밀번호가 올바르지 않습니다.');
@@ -50,4 +60,13 @@ export function getSessionUser(): User | null {
 
 export async function logout(): Promise<void> {
   removeKey(STORAGE_KEYS.session);
+  if (isRemoteBackend) await remote.signOut().catch(() => undefined);
+}
+
+/** 앱 시작 시: 선생님 서버 로그인이 끊겼으면 세션을 정리 (true = 그대로 유지) */
+export async function verifySession(user: User | null): Promise<boolean> {
+  if (!user || !isRemoteBackend || user.role !== 'teacher') return true;
+  if (await remote.hasTeacherSession()) return true;
+  removeKey(STORAGE_KEYS.session);
+  return false;
 }

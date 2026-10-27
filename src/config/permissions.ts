@@ -1,4 +1,5 @@
 import type { Role } from '@/types';
+import { isRemoteBackend } from './backend';
 
 /**
  * 역할별 권한 표.
@@ -19,7 +20,12 @@ export const permissions = {
 
 export type Permission = keyof typeof permissions;
 
+/**
+ * Supabase 를 쓸 때는 교수자(퀴즈 로그인, 서버 계정 없음)에게
+ * 서버 권한이 필요한 기능을 열지 않습니다. 이 기능들은 선생님 계정으로 로그인해야 합니다.
+ */
 export function can(role: Role | undefined, permission: Permission): boolean {
   if (!role) return false;
+  if (isRemoteBackend && role === 'professor') return false;
   return (permissions[permission] as Role[]).includes(role);
 }

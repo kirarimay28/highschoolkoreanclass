@@ -59,7 +59,9 @@ src/
 | 학생 명단 | 선생님 계정 → ☰ 메뉴 → 학생 등록 (처음 샘플: `src/data/students.mock.ts`, 저장: `src/services/rosterService.ts`) |
 | 아이콘 추가 | `src/components/common/icons.ts` |
 
-## 백엔드로 옮길 때
+## 데이터 저장 (Supabase)
 
-모든 화면은 `src/services/*` 의 비동기 함수만 호출합니다. Supabase/Firebase 연결 시 각 함수 내부만 교체하면 됩니다.
-특히 게시판 익명 처리는 지금 브라우저에서만 가려지므로, 서버에서도 학생에게 실명을 내려주지 않도록 같은 규칙(`getAuthorDisplayName`)을 적용해야 합니다.
+- `VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY` 가 있으면 Supabase 에 저장 (모든 기기 공유)
+- 없으면 이 브라우저(localStorage)에만 저장 (개발·미리보기용, 샘플 데이터 포함)
+- 설정 방법: [`supabase/README.md`](supabase/README.md) · DB 구조와 보안 규칙: [`supabase/schema.sql`](supabase/schema.sql)
+- 화면은 `src/services/*` 만 호출하고, Supabase 구현은 `src/services/remote/*` 에 있습니다.

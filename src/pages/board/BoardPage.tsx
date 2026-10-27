@@ -55,7 +55,7 @@ export function BoardPage() {
                 <span>{formatDateTime(p.createdAt)}</span>
                 <span className="ml-auto inline-flex items-center gap-1">
                   <Icon name="comment" size={14} />
-                  {p.comments.length}
+                  {p.commentCount ?? p.comments.length}
                 </span>
               </div>
             </Link>
