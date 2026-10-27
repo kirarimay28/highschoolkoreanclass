@@ -16,6 +16,8 @@ export const STORAGE_KEYS = {
   library: 'library',
   feedback: 'feedback',
   roster: 'roster',
+  messages: 'messages',
+  notificationsSeen: 'notificationsSeen',
   seeded: 'seeded:v1',
 } as const;
 

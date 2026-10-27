@@ -3,6 +3,7 @@ import { createRoot } from 'react-dom/client';
 import App from './App';
 import { appConfig } from './config/app';
 import { isRemoteBackend } from './config/backend';
+import './services/notificationProviders';
 import { ensureSeedData } from './services/seedService';
 // 폰트는 npm 패키지로 내장 (학교망·오프라인에서도 동작)
 import '@fontsource/gowun-batang/400.css';

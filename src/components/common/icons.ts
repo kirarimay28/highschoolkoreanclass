@@ -4,9 +4,11 @@
  * 실제 컴포넌트 매핑은 여기서 합니다. 새 아이콘이 필요하면 lucide-react 에서 import 후 추가하세요.
  */
 import {
+  Bell,
   BookOpen,
   BookMarked,
   CalendarDays,
+  CircleCheck,
   Check,
   ChevronLeft,
   CircleHelp,
@@ -19,6 +21,7 @@ import {
   Hammer,
   House,
   Library,
+  Mail,
   ListTodo,
   Map as MapIcon,
   LogOut,
@@ -27,6 +30,7 @@ import {
   MessagesSquare,
   Mic,
   NotebookPen,
+  Paperclip,
   Plus,
   ScrollText,
   Search,
@@ -45,9 +49,11 @@ import {
 } from 'lucide-react';
 
 export const iconRegistry = {
+  bell: Bell,
   book: BookOpen,
   bookmark: BookMarked,
   calendar: CalendarDays,
+  done: CircleCheck,
   check: Check,
   back: ChevronLeft,
   help: CircleHelp,
@@ -60,6 +66,7 @@ export const iconRegistry = {
   hammer: Hammer,
   home: House,
   library: Library,
+  mail: Mail,
   todo: ListTodo,
   map: MapIcon,
   logout: LogOut,
@@ -68,6 +75,7 @@ export const iconRegistry = {
   messages: MessagesSquare,
   mic: Mic,
   notebook: NotebookPen,
+  paperclip: Paperclip,
   plus: Plus,
   scroll: ScrollText,
   search: Search,

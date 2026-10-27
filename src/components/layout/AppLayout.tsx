@@ -9,6 +9,7 @@ import { Emblem } from '@/components/motifs/Emblem';
 import { appConfig } from '@/config/app';
 import { roleLabels } from '@/config/roles';
 import { useAuth } from '@/context/AuthContext';
+import { NotificationBell } from './NotificationBell';
 import { SideDrawer } from './SideDrawer';
 
 /** 로그인 후 모든 화면의 공통 틀: 유리 상단 바 + 메뉴 서랍 + 본문 */
@@ -51,7 +52,8 @@ export function AppLayout() {
             </Link>
           </div>
           {user && (
-            <div className="flex items-center gap-2 sm:gap-3">
+            <div className="flex items-center gap-1 sm:gap-3">
+              <NotificationBell user={user} />
               <Avatar name={user.name} size={34} className="hidden sm:flex" />
               <div className="text-right leading-tight sm:text-left">
                 <p className="max-w-[8rem] truncate text-sm font-semibold sm:max-w-none">{user.name}</p>

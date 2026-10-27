@@ -75,6 +75,15 @@ export const lobbyMenu: LobbyMenuItem[] = [
     })),
   },
   {
+    id: 'messages',
+    title: '선생님께 쪽지',
+    description: '시간 걱정 없이 부담 없이 선생님께 연락해요',
+    icon: 'mail',
+    tone: 'plum',
+    path: '/messages',
+    showInLobby: true,
+  },
+  {
     id: 'board',
     title: '질의응답 게시판',
     description: '공부 · 생활 고민을 익명 또는 실명으로 물어보세요',

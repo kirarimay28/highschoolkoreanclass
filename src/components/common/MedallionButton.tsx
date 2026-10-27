@@ -45,6 +45,8 @@ export interface MedallionButtonProps {
   interactive?: boolean;
   /** 이름·설명을 원 아래에 표시할지 (기본 true) */
   showLabel?: boolean;
+  /** 원 위에 작은 숫자 배지 (0 이면 숨김) */
+  badge?: number;
 }
 
 const sizes: Record<MedallionSize, { circle: string; icon: string; label: string }> = {
@@ -84,6 +86,7 @@ export const MedallionButton = forwardRef<HTMLButtonElement, MedallionButtonProp
     colors,
     interactive = true,
     showLabel = true,
+    badge,
   },
   ref,
 ) {
@@ -135,7 +138,7 @@ export const MedallionButton = forwardRef<HTMLButtonElement, MedallionButtonProp
           ref={ref}
           interactive={interactive}
           layoutId={layoutId}
-          aria-label={description ? `${label} — ${description}` : label}
+          aria-label={`${label}${badge ? ` (${badge}건)` : ''}${description ? ` — ${description}` : ''}`}
           aria-expanded={expanded}
           onClick={onSelect}
           onHoverStart={() => setActive(true)}
@@ -185,6 +188,11 @@ export const MedallionButton = forwardRef<HTMLButtonElement, MedallionButtonProp
           </AnimatePresence>
 
           <IconComponent className={cn('relative', s.icon)} strokeWidth={1.5} aria-hidden />
+          {!!badge && badge > 0 && (
+            <span className="absolute right-[6%] top-[6%] flex h-7 min-w-7 items-center justify-center rounded-full bg-royal-light px-1.5 text-sm font-bold text-hanji ring-2 ring-hanji-card sm:h-8 sm:min-w-8 sm:text-base">
+              {badge > 99 ? '99+' : badge}
+            </span>
+          )}
         </MedalShell>
       </motion.div>
 

@@ -50,6 +50,19 @@ export function formatDateTime(ts: number): string {
   return `${d.getMonth() + 1}월 ${d.getDate()}일 ${pad(d.getHours())}:${pad(d.getMinutes())}`;
 }
 
+/** "방금 전", "3시간 전", "2일 전" */
+export function formatRelative(ts: number, now = Date.now()): string {
+  const diff = Math.max(0, now - ts);
+  const min = Math.floor(diff / 60000);
+  if (min < 1) return '방금 전';
+  if (min < 60) return `${min}분 전`;
+  const h = Math.floor(min / 60);
+  if (h < 24) return `${h}시간 전`;
+  const d = Math.floor(h / 24);
+  if (d < 7) return `${d}일 전`;
+  return formatDateTime(ts);
+}
+
 export function formatDateLabel(key: string): string {
   const d = fromDateKey(key);
   const week = ['일', '월', '화', '수', '목', '금', '토'][d.getDay()];
