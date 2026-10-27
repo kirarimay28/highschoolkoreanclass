@@ -20,7 +20,7 @@ export interface SubjectSection {
   preview?: SectionPreviewId;
 }
 
-export type SectionPreviewId = 'timeline' | 'diy' | 'lectures';
+export type SectionPreviewId = 'timeline' | 'diy' | 'lectures' | 'vocab';
 
 /**
  * 과목 포인트 색 ("R G B" 형식). 기본 홍·금 톤 안에서 과목마다 살짝 다르게.
@@ -55,7 +55,7 @@ export const subjects: SubjectConfig[] = [
     accent: { accent: '163 38 64', gold: '201 162 39', tint: '214 112 130' },
     sections: [
       { id: 'timeline', title: '한국 문학 연대기 지도', description: '시대 × 갈래로 보는 고전 문학의 흐름', icon: 'map', status: 'ready', path: 'timeline', preview: 'timeline' },
-      { id: 'activities', title: '활동지', description: '작품 감상·비평 활동', icon: 'notebook', status: 'preparing' },
+      { id: 'vocab', title: '고전 어휘', description: '고전 시가 빈출 어휘를 익히고 시험으로 확인해요', icon: 'bookmark', status: 'ready', path: 'vocab', preview: 'vocab' },
       { id: 'assignments', title: '과제', description: '감상문·창작 과제와 마감일', icon: 'todo', status: 'preparing' },
       { id: 'quiz', title: '형성평가', description: '작품 이해 확인 문제', icon: 'help', status: 'preparing' },
     ],

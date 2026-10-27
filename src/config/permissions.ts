@@ -16,6 +16,8 @@ export const permissions = {
   manageStructure: ['teacher', 'professor'],
   /** 개념 복습 강의: 영상 올리기·수정·삭제·순서 바꾸기 (조회 수만 보임) */
   manageLectures: ['teacher', 'professor'],
+  /** 고전 어휘: 시험 응시 기록 보기·지우기 (연습 기록은 볼 수 없음) */
+  manageVocabExams: ['teacher', 'professor'],
   /** 학생 등록·삭제 */
   manageStudents: ['teacher', 'professor'],
   /** 게시판 글 삭제(타인 글 포함) */

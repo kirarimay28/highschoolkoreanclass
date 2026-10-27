@@ -33,6 +33,8 @@ export interface Stage {
 }
 
 export interface Work {
+  /** 다른 화면에서 이 작품을 가리킬 때 쓰는 id (예: 고전 어휘의 출전 작품). 주소 ?work=id 로 바로 열림 */
+  id?: string;
   title: string;
   author?: string;
   era: EraId;
@@ -255,9 +257,9 @@ export const lanes: Lane[] = [
       { from: 'joseon-early', to: 'joseon-early', label: '한글 창제 후 기록' },
     ],
     works: [
-      { title: '가시리', era: 'goryeo-early', note: '이별의 정한' },
-      { title: '청산별곡', era: 'goryeo-late', note: '분절체, 후렴구' },
-      { title: '서경별곡', era: 'goryeo-late' },
+      { id: 'gasiri', title: '가시리', era: 'goryeo-early', note: '이별의 정한' },
+      { id: 'cheongsan-byeolgok', title: '청산별곡', era: 'goryeo-late', note: '분절체, 후렴구' },
+      { id: 'seogyeong-byeolgok', title: '서경별곡', era: 'goryeo-late' },
       { title: '《악학궤범》·《악장가사》', era: 'joseon-early', note: '고려 가요를 한글로 기록한 문헌' },
     ],
     detail: {
@@ -356,7 +358,7 @@ export const lanes: Lane[] = [
       { from: 'joseon-late', to: 'joseon-late', label: '변격 가사' },
     ],
     works: [
-      { title: '상춘곡', author: '정극인', era: 'joseon-early' },
+      { id: 'sangchungok', title: '상춘곡', author: '정극인', era: 'joseon-early' },
       { title: '관동별곡', author: '정철', era: 'joseon-early' },
       { title: '누항사', author: '박인로', era: 'joseon-late' },
       { title: '일동장유가', author: '김인겸', era: 'joseon-late', note: '장편 기행 가사' },
@@ -509,7 +511,7 @@ export const lanes: Lane[] = [
     stages: [{ from: 'joseon-late', to: 'joseon-late', label: '한문 수필 → 국문 수필' }],
     works: [
       { title: '한중록', author: '혜경궁 홍씨', era: 'joseon-late' },
-      { title: '조침문', author: '유씨 부인', era: 'joseon-late' },
+      { id: 'jochimmun', title: '조침문', author: '유씨 부인', era: 'joseon-late' },
     ],
     detail: {
       definition: '자유로운 형식으로 체험과 생각을 기록한 산문. 초기에는 양반층의 한문 수필이 다수였으나 점차 여성이 주요 작자층으로 자리 잡음.',
@@ -672,6 +674,16 @@ export const timelineMaps: { id: MapId | 'modern'; label: string; ready: boolean
   { id: 'narrative', label: '고전 서사', ready: true },
   { id: 'modern', label: '현대 문학 · 준비 중', ready: false },
 ];
+
+/** 작품 id → 작품과 그 갈래 */
+export function findWork(id: string | undefined): { work: Work; lane: Lane } | undefined {
+  if (!id) return undefined;
+  for (const lane of lanes) {
+    const work = lane.works.find((w) => w.id === id);
+    if (work) return { work, lane };
+  }
+  return undefined;
+}
 
 export const eraIndex = (id: EraId) => eras.findIndex((e) => e.id === id);
 export const getEra = (id: EraId) => eras.find((e) => e.id === id)!;

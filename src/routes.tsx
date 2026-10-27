@@ -13,6 +13,7 @@ import { StudentManagePage } from '@/pages/students/StudentManagePage';
 import { StudyRoomPage } from '@/pages/studyroom/StudyRoomPage';
 import { LecturePage } from '@/pages/subjects/lectures/LecturePage';
 import { TimelinePage } from '@/pages/subjects/literature/TimelinePage';
+import { VocabPage } from '@/pages/subjects/literature/vocab/VocabPage';
 import { SubjectPage } from '@/pages/subjects/SubjectPage';
 import { TutorialPage } from '@/pages/tutorial/TutorialPage';
 
@@ -29,6 +30,7 @@ export function AppRoutes() {
           <Route path="/lobby" element={<LobbyPage />} />
           <Route path="/subject/:subjectId" element={<SubjectPage />} />
           <Route path="/subject/literature/timeline" element={<TimelinePage />} />
+          <Route path="/subject/literature/vocab" element={<VocabPage />} />
           <Route path="/subject/:subjectId/lectures" element={<LecturePage />} />
           <Route
             path="/subject/reading-writing/diy"

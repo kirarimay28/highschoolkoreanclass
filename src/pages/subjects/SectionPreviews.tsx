@@ -5,7 +5,7 @@ const A = (o = 1) => `rgb(var(--page-accent) / ${o})`;
 const G = (o = 1) => `rgb(var(--page-gold) / ${o})`;
 
 export function SectionPreview({ id }: { id: SectionPreviewId }) {
-  const art = id === 'timeline' ? <TimelineArt /> : id === 'diy' ? <DiyArt /> : <LectureArt />;
+  const art = id === 'timeline' ? <TimelineArt /> : id === 'diy' ? <DiyArt /> : id === 'vocab' ? <VocabArt /> : <LectureArt />;
   return (
     <svg viewBox="0 0 240 72" className="h-full w-full" preserveAspectRatio="xMidYMid meet" aria-hidden focusable="false">
       {art}
@@ -103,6 +103,39 @@ function LectureArt() {
           <rect x={178} y={m.y - 1.5} width={m.w} height={3} rx={1.5} fill={G(0.45)} />
         </g>
       ))}
+    </g>
+  );
+}
+
+/** 겹쳐진 단어 카드 */
+function VocabArt() {
+  const cards = [
+    { x: 58, y: 14, r: -9, o: 0.55 },
+    { x: 76, y: 10, r: -3, o: 0.75 },
+  ];
+  return (
+    <g>
+      {cards.map((c, i) => (
+        <rect key={i} x={c.x} y={c.y} width={74} height={50} rx={7} fill="white" stroke={G(c.o)} strokeWidth={1.2} transform={`rotate(${c.r} ${c.x + 37} ${c.y + 25})`} />
+      ))}
+      <g transform="rotate(4 131 37)">
+        <rect x={94} y={10} width={74} height={50} rx={7} fill="white" stroke={A(0.6)} strokeWidth={1.4} />
+        <rect x={94} y={10} width={74} height={9} rx={4} fill={G(0.3)} />
+        <text x={131} y={42} textAnchor="middle" fontSize={15} fontWeight={700} fill={A(0.9)} fontFamily="serif">
+          졍지
+        </text>
+        <rect x={115} y={49} width={32} height={3} rx={1.5} fill={G(0.5)} />
+      </g>
+      <g>
+        <rect x={178} y={20} width={44} height={14} rx={7} fill={A(0.12)} />
+        <text x={200} y={30.5} textAnchor="middle" fontSize={8} fontWeight={700} fill={A(0.85)}>
+          부엌
+        </text>
+        <rect x={178} y={40} width={44} height={14} rx={7} fill={G(0.18)} />
+        <text x={200} y={50.5} textAnchor="middle" fontSize={8} fontWeight={700} fill={G(1)}>
+          「청산별곡」
+        </text>
+      </g>
     </g>
   );
 }

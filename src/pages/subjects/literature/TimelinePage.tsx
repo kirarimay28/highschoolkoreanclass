@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { EmptyState } from '@/components/common/EmptyState';
 import { BottomSheet } from '@/components/common/BottomSheet';
 import { Modal } from '@/components/common/Modal';
@@ -6,7 +7,7 @@ import { RoyalButton } from '@/components/common/RoyalButton';
 import { TabBar } from '@/components/common/TabBar';
 import { MedalPageHeader } from '@/components/layout/MedalPageHeader';
 import { getSubject } from '@/config/subjects';
-import { getEra, influences, standardTexts, timelineMaps, type MapId } from '@/data/literatureTimeline';
+import { findWork, getEra, influences, standardTexts, timelineMaps, type MapId } from '@/data/literatureTimeline';
 import { useMediaQuery } from '@/utils/useMediaQuery';
 import { MobileTimeline } from './MobileTimeline';
 import { TimelineMap, type TimelineSelection } from './TimelineMap';
@@ -16,9 +17,12 @@ type TabId = MapId | 'modern';
 /** 문학 › 한국 문학 연대기 지도 (데이터: src/data/literatureTimeline.ts) */
 export function TimelinePage() {
   const subject = getSubject('literature')!;
-  const [tab, setTab] = useState<TabId>('poetry');
+  // ?work=작품id 로 들어오면 (예: 고전 어휘의 출전 작품) 그 작품 설명을 바로 엶
+  const [params] = useSearchParams();
+  const linked = findWork(params.get('work') ?? undefined);
+  const [tab, setTab] = useState<TabId>(linked?.lane.map ?? 'poetry');
   const [showInfluences, setShowInfluences] = useState(false);
-  const [selected, setSelected] = useState<TimelineSelection | null>(null);
+  const [selected, setSelected] = useState<TimelineSelection | null>(linked ? { kind: 'work', ...linked } : null);
   const wide = useMediaQuery('(min-width: 768px)');
   const current = timelineMaps.find((m) => m.id === tab)!;
   const hasArrows = influences.some((i) => i.map === tab);

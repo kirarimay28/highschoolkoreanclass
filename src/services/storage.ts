@@ -23,6 +23,7 @@ export const STORAGE_KEYS = {
   lectures: 'lectures',
   lectureProgress: 'lectureProgress',
   lectureMemos: 'lectureMemos',
+  vocabAttempts: 'vocabAttempts',
   notificationsSeen: 'notificationsSeen',
   seeded: 'seeded:v1',
 } as const;
