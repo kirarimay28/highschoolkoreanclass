@@ -63,6 +63,24 @@ export async function logout(): Promise<void> {
   if (isRemoteBackend) await remote.signOut().catch(() => undefined);
 }
 
+/** 초대·재설정 링크: 새 비밀번호 저장 후 선생님으로 입장 */
+export async function completePasswordSetup(password: string): Promise<User> {
+  try {
+    await remote.setPassword(password);
+    return saveSession(await remote.teacherFromSession());
+  } catch (err) {
+    throw new AuthError((err as Error).message);
+  }
+}
+
+export async function requestPasswordReset(email: string): Promise<void> {
+  try {
+    await remote.sendPasswordReset(email);
+  } catch (err) {
+    throw new AuthError((err as Error).message);
+  }
+}
+
 /** 앱 시작 시: 선생님 서버 로그인이 끊겼으면 세션을 정리 (true = 그대로 유지) */
 export async function verifySession(user: User | null): Promise<boolean> {
   if (!user || !isRemoteBackend || user.role !== 'teacher') return true;
