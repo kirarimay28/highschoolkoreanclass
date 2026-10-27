@@ -4,8 +4,8 @@ import { loginStudent } from '@/services/authService';
 import type { LoginFormProps } from './loginForms';
 
 export function StudentLoginForm({ onSuccess }: LoginFormProps) {
+  const [name, setName] = useState('');
   const [studentId, setStudentId] = useState('');
-  const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [busy, setBusy] = useState(false);
 
@@ -14,7 +14,7 @@ export function StudentLoginForm({ onSuccess }: LoginFormProps) {
     setBusy(true);
     setError('');
     try {
-      onSuccess(await loginStudent(studentId, password));
+      onSuccess(await loginStudent(name, studentId));
     } catch (err) {
       setError((err as Error).message);
     } finally {
@@ -25,6 +25,18 @@ export function StudentLoginForm({ onSuccess }: LoginFormProps) {
   return (
     <form onSubmit={submit} className="space-y-4">
       <div>
+        <label className="royal-label" htmlFor="studentName">이름</label>
+        <input
+          id="studentName"
+          className="royal-input"
+          autoComplete="name"
+          placeholder="예: 김하늘"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          required
+        />
+      </div>
+      <div>
         <label className="royal-label" htmlFor="studentId">학번</label>
         <input
           id="studentId"
@@ -34,18 +46,6 @@ export function StudentLoginForm({ onSuccess }: LoginFormProps) {
           placeholder="예: 20301"
           value={studentId}
           onChange={(e) => setStudentId(e.target.value)}
-          required
-        />
-      </div>
-      <div>
-        <label className="royal-label" htmlFor="studentPw">비밀번호</label>
-        <input
-          id="studentPw"
-          type="password"
-          className="royal-input"
-          autoComplete="current-password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
           required
         />
       </div>

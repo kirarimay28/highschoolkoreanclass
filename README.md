@@ -22,10 +22,10 @@ npm run preview    # 빌드 결과 미리보기
 
 ## 테스트 계정
 
-| 역할 | ID | 비밀번호 |
+| 역할 | 입력 1 | 입력 2 |
 | --- | --- | --- |
-| 학생 | `20301` ~ `20305` | `1234` |
-| 선생님 | `teacher01`, `teacher02` | `teacher` |
+| 학생 | 이름 `김하늘` | 학번 `20301` (샘플 5명: 20301~20305, 선생님의 [학생 등록]에서 추가·삭제) |
+| 선생님 | ID `teacher01`, `teacher02` | 비밀번호 `teacher` |
 | 교수자 | 퀴즈 정답: `AI디지털학습환경설계` → `A+` | — |
 
 ## 폴더 구조
@@ -56,7 +56,7 @@ src/
 | 고쳐주세요 유형·상태 | `src/config/feedback.ts` |
 | 역할별 권한 (업로드, 상태 변경 등) | `src/config/permissions.ts` |
 | 튜토리얼 내용 | `src/data/tutorial.data.ts` |
-| 학생 명단 | `src/data/students.mock.ts` (CSV 파서: `src/services/rosterService.ts`) |
+| 학생 명단 | 선생님 계정 → ☰ 메뉴 → 학생 등록 (처음 샘플: `src/data/students.mock.ts`, 저장: `src/services/rosterService.ts`) |
 | 아이콘 추가 | `src/components/common/icons.ts` |
 
 ## 백엔드로 옮길 때

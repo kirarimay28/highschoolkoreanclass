@@ -11,6 +11,8 @@ export const permissions = {
   changeFeedbackStatus: ['teacher', 'professor'],
   /** 게시판 익명 글의 실명 열람 */
   seeAnonymousAuthor: ['teacher', 'professor'],
+  /** 학생 등록·삭제 */
+  manageStudents: ['teacher', 'professor'],
   /** 게시판 글 삭제(타인 글 포함) */
   moderateBoard: ['teacher', 'professor'],
 } satisfies Record<string, Role[]>;

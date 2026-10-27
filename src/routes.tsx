@@ -7,6 +7,7 @@ import { FeedbackPage } from '@/pages/feedback/FeedbackPage';
 import { LibraryPage } from '@/pages/library/LibraryPage';
 import { LobbyPage } from '@/pages/lobby/LobbyPage';
 import { LoginPage } from '@/pages/login/LoginPage';
+import { StudentManagePage } from '@/pages/students/StudentManagePage';
 import { StudyRoomPage } from '@/pages/studyroom/StudyRoomPage';
 import { SubjectPage } from '@/pages/subjects/SubjectPage';
 import { SubjectSelectPage } from '@/pages/subjects/SubjectSelectPage';
@@ -26,6 +27,7 @@ export function AppRoutes() {
           <Route path="/board" element={<BoardPage />} />
           <Route path="/board/:postId" element={<BoardPostPage />} />
           <Route path="/library" element={<LibraryPage />} />
+          <Route path="/students" element={<StudentManagePage />} />
           <Route path="/tutorial" element={<TutorialPage />} />
           <Route path="/feedback" element={<FeedbackPage />} />
         </Route>

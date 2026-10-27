@@ -57,6 +57,15 @@ export const lobbyMenu: LobbyMenuItem[] = [
     path: '/library',
   },
   {
+    id: 'students',
+    title: '학생 등록',
+    description: '앱을 쓸 학생의 이름과 학번을 등록해요',
+    icon: 'users',
+    tone: 'gold',
+    path: '/students',
+    roles: ['teacher', 'professor'],
+  },
+  {
     id: 'tutorial',
     title: '튜토리얼',
     description: '처음이라면 여기서 사용법을 익혀요',

@@ -10,6 +10,14 @@ export interface User {
   meta?: string;
 }
 
+/** 선생님이 등록한 학생 (등록된 학생만 로그인 가능) */
+export interface RegisteredStudent {
+  studentId: string; // 학번
+  name: string;
+  registeredAt: number;
+  registeredBy: string; // 등록한 선생님 이름
+}
+
 export type SubjectId = 'literature' | 'reading-writing' | 'speech-language';
 
 // ── 스터디룸 ──

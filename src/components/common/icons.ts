@@ -35,7 +35,9 @@ import {
   Trash2,
   Trophy,
   Upload,
+  UserPlus,
   UserRound,
+  UsersRound,
   Wrench,
   X,
   type LucideIcon,
@@ -74,6 +76,8 @@ export const iconRegistry = {
   trophy: Trophy,
   upload: Upload,
   user: UserRound,
+  userPlus: UserPlus,
+  users: UsersRound,
   wrench: Wrench,
   close: X,
 } satisfies Record<string, LucideIcon>;

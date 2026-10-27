@@ -1,7 +1,7 @@
 import { professorAccount } from '@/config/professorQuiz';
 import { teachersMock } from '@/data/teachers.mock';
 import type { User } from '@/types';
-import { getStudentRoster } from './rosterService';
+import { describeStudentId, findStudent } from './rosterService';
 import { STORAGE_KEYS, readJSON, removeKey, writeJSON } from './storage';
 
 /**
@@ -17,16 +17,17 @@ function saveSession(user: User): User {
   return user;
 }
 
-export async function loginStudent(studentId: string, password: string): Promise<User> {
-  const student = getStudentRoster().find((s) => s.studentId === studentId.trim());
-  if (!student || student.password !== password) {
-    throw new AuthError('학번 또는 비밀번호가 올바르지 않습니다.');
+/** 학생: 선생님이 등록한 이름 + 학번이 모두 맞아야 입장 */
+export async function loginStudent(name: string, studentId: string): Promise<User> {
+  const student = findStudent(name, studentId);
+  if (!student) {
+    throw new AuthError('등록된 학생을 찾을 수 없어요. 이름과 학번을 확인하고, 그래도 안 되면 선생님께 등록을 요청하세요.');
   }
   return saveSession({
     id: `student:${student.studentId}`,
     name: student.name,
     role: 'student',
-    meta: `${student.grade}학년 ${student.classNo}반 ${student.number}번`,
+    meta: describeStudentId(student.studentId) ?? `학번 ${student.studentId}`,
   });
 }
 

@@ -14,7 +14,7 @@ export interface LoginRoleOption {
  * (각 역할의 입력 폼은 src/pages/login/loginForms.ts 에서 연결)
  */
 export const loginRoles: LoginRoleOption[] = [
-  { id: 'student', label: '학생용', description: '학번과 비밀번호로 입장', icon: 'graduation' },
+  { id: 'student', label: '학생용', description: '이름과 학번으로 입장', icon: 'graduation' },
   { id: 'teacher', label: '선생님용', description: '교직원 ID로 입장', icon: 'feather' },
   { id: 'professor', label: '교수자용', description: '퀴즈를 풀고 입장', icon: 'crown' },
 ];
