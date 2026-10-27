@@ -1,7 +1,5 @@
-import { Link, useOutletContext } from 'react-router-dom';
-import { Icon } from '@/components/common/Icon';
+import { Link } from 'react-router-dom';
 import { IconTile } from '@/components/common/IconTile';
-import type { AppLayoutContext } from '@/components/layout/AppLayout';
 import { CloudDivider } from '@/components/motifs/CloudDivider';
 import { lobbyMenu } from '@/config/lobbyMenu';
 import { roleLabels, withHonorific } from '@/config/roles';
@@ -9,10 +7,7 @@ import { useCurrentUser } from '@/context/AuthContext';
 
 export function LobbyPage() {
   const user = useCurrentUser();
-  const { openMenu } = useOutletContext<AppLayoutContext>();
-  const visible = lobbyMenu.filter((m) => !m.roles || m.roles.includes(user.role));
-  const cards = visible.filter((m) => m.showInLobby);
-  const others = visible.filter((m) => !m.showInLobby);
+  const cards = lobbyMenu.filter((m) => m.showInLobby && (!m.roles || m.roles.includes(user.role)));
 
   return (
     <div className="mx-auto max-w-4xl">
@@ -39,17 +34,6 @@ export function LobbyPage() {
           </Link>
         ))}
       </div>
-
-      {others.length > 0 && (
-        <button
-          type="button"
-          onClick={openMenu}
-          className="mx-auto mt-6 flex items-center gap-2 rounded-full px-4 py-2 text-sm text-ink-soft transition-colors hover:bg-royal/[0.05] hover:text-royal"
-        >
-          <Icon name="menu" size={16} />
-          게시판 · 도서관 등 전체 메뉴 보기
-        </button>
-      )}
     </div>
   );
 }

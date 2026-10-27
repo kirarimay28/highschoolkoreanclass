@@ -10,11 +10,6 @@ import { roleLabels } from '@/config/roles';
 import { useAuth } from '@/context/AuthContext';
 import { SideDrawer } from './SideDrawer';
 
-/** 페이지에서 useOutletContext 로 꺼내 쓰는 값 */
-export interface AppLayoutContext {
-  openMenu: () => void;
-}
-
 /** 로그인 후 모든 화면의 공통 틀: 유리 상단 바 + 메뉴 서랍 + 본문 */
 export function AppLayout() {
   const { user, signOut } = useAuth();
@@ -73,7 +68,7 @@ export function AppLayout() {
       </header>
 
       <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-6 sm:py-8">
-        <Outlet context={{ openMenu: () => setDrawerOpen(true) } satisfies AppLayoutContext} />
+        <Outlet />
       </main>
 
       <footer className="py-6 text-center text-xs text-ink-faint">{appConfig.footer}</footer>
