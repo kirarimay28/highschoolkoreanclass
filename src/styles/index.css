@@ -65,6 +65,9 @@
     background-clip: text;
     color: transparent;
     animation: title-shimmer 4.5s ease-in-out infinite;
+    /* 가장 굵은 글꼴(900)보다 더 굵게: 투명 외곽선을 둘러 글자 면적을 넓힘 (색은 그라데이션이 채움) */
+    -webkit-text-stroke: var(--title-extra-weight) transparent;
+    paint-order: stroke fill;
   }
   @keyframes title-shimmer {
     0% { background-position: 130% 0, 0 0; }

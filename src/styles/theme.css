@@ -43,6 +43,8 @@
   --font-serif: 'Gowun Batang', 'Nanum Myeongjo', serif;
   /* 큰 제목용 (아주 굵은 명조 — 그라데이션·반짝임이 잘 보이도록) */
   --font-display: 'Noto Serif KR', 'Gowun Batang', serif;
+  /* 큰 제목을 글꼴 최대 굵기보다 더 두껍게 (0 이면 원래 굵기) */
+  --title-extra-weight: 0.055em;
   --font-sans: 'Pretendard Variable', Pretendard, 'Noto Sans KR', -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo',
     'Malgun Gothic', system-ui, sans-serif;
 
