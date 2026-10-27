@@ -26,8 +26,8 @@ export const permissions = {
 export type Permission = keyof typeof permissions;
 
 /**
- * 교수자는 권한이 따로 없습니다. 상단의 [학생 화면으로 보기]/[선생님 화면으로 보기]로
- * 실제 학생(명단의 교수자 학생) / 실제 선생님 계정(교수자용) 시점에서 둘러봅니다.
+ * 교수자는 권한이 따로 없습니다. 교수자는 상단의 [학생 화면으로 보기]/[선생님 화면으로 보기]로
+ * 학생·선생님 역할을 빌려 체험 모드(샘플 데이터, 실제 데이터에 남지 않음)에서 둘러봅니다.
  */
 export function can(role: Role | undefined, permission: Permission): boolean {
   if (!role) return false;

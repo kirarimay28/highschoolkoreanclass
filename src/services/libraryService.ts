@@ -1,6 +1,7 @@
 import { LIBRARY_INLINE_LIMIT } from '@/config/library';
 import type { LibraryFile, SubjectId, User } from '@/types';
 import { isRemoteBackend } from '@/config/backend';
+import { hideItem, mergeWithServer, publicReads, serverOrEmpty } from './professorOverlay';
 import * as remote from './remote/libraryRemote';
 import { STORAGE_KEYS, createId, readJSON, resolve, writeJSON } from './storage';
 
@@ -23,7 +24,9 @@ const strip = ({ dataUrl: _omit, ...file }: StoredLibraryFile): LibraryFile => f
 
 export async function listFiles(filter: { subjectId?: SubjectId | 'all'; query?: string } = {}): Promise<LibraryFile[]> {
   const q = filter.query?.trim().toLowerCase();
-  const source: StoredLibraryFile[] = isRemoteBackend ? await remote.listFiles(filter.subjectId) : load();
+  const source: StoredLibraryFile[] = isRemoteBackend
+    ? await remote.listFiles(filter.subjectId)
+    : mergeWithServer(await serverOrEmpty(() => remote.listFiles(filter.subjectId)), load());
   return (
     source
       .filter((f) => !filter.subjectId || filter.subjectId === 'all' || f.subjectId === filter.subjectId)
@@ -86,6 +89,7 @@ export async function uploadFile(user: User, input: UploadInput): Promise<Librar
 
 export function deleteFile(id: string): Promise<void> {
   if (isRemoteBackend) return remote.deleteFile(id);
+  if (publicReads()) hideItem(id);
   sessionBlobs.delete(id);
   save(load().filter((f) => f.id !== id));
   return resolve(undefined);
@@ -95,7 +99,7 @@ export function deleteFile(id: string): Promise<void> {
 export function getDownloadUrl(id: string): Promise<{ url: string; fileName: string; isPlaceholder: boolean } | null> {
   if (isRemoteBackend) return remote.getDownloadUrl(id);
   const record = load().find((f) => f.id === id);
-  if (!record) return resolve(null);
+  if (!record) return publicReads() ? remote.getDownloadUrl(id) : resolve(null);
   const blob = sessionBlobs.get(id);
   if (blob) return resolve({ url: URL.createObjectURL(blob), fileName: record.fileName, isPlaceholder: false });
   if (record.dataUrl) return resolve({ url: record.dataUrl, fileName: record.fileName, isPlaceholder: false });

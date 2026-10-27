@@ -17,7 +17,7 @@ export function ProfessorBar() {
           <Seal size={18} />
           <span>
             <b className="text-royal">교수자 모드</b>
-            <span className="hidden sm:inline"> · 실제 학생·선생님과 같은 화면이에요. 작성·수정·삭제한 내용은 실제로 남아요.</span>
+            <span className="hidden sm:inline"> · 공개된 실제 내용이 보여요. 교수자가 쓴 내용은 실제 데이터에 남지 않고 로그아웃하면 사라져요.</span>
           </span>
         </p>
         <div role="radiogroup" aria-label="보는 시점" className="flex rounded-full border border-gold/40 bg-white/70 p-0.5">

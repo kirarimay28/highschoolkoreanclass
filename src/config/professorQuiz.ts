@@ -51,16 +51,10 @@ export const professorQuiz: QuizQuestion[] = [
   },
 ];
 
-/**
- * 교수자 계정 — 실제 학생·선생님과 똑같은 데이터로 둘러봄
- *  · 선생님 화면: Supabase 에 만든 교수자용 선생님 계정(email)으로 로그인 (비밀번호는 퀴즈 뒤에 입력, 코드에 저장하지 않음)
- *  · 학생 화면:  학생 명단의 studentId 학생으로 (없으면 처음 로그인할 때 자동 등록)
- */
+/** 퀴즈 통과 후 로그인되는 교수자 계정 정보 */
 export const professorAccount = {
   id: 'professor',
   name: '황현우',
-  email: 'professor@kukgyo.school',
-  studentId: '20399',
 } as const;
 
 export const professorQuizText = {

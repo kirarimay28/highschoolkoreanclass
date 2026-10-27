@@ -1,15 +1,16 @@
 import type { FeedbackItem, FeedbackStatus, FeedbackType, User } from '@/types';
 import { isRemoteBackend } from '@/config/backend';
+import { mergeWithServer, patchItem, publicReads, serverOrEmpty } from './professorOverlay';
 import * as remote from './remote/feedbackRemote';
 import { STORAGE_KEYS, createId, readJSON, resolve, writeJSON } from './storage';
 
 const load = () => readJSON<FeedbackItem[]>(STORAGE_KEYS.feedback, []);
 const save = (items: FeedbackItem[]) => writeJSON(STORAGE_KEYS.feedback, items);
 
-export function listFeedback(type?: FeedbackType | 'all'): Promise<FeedbackItem[]> {
+export async function listFeedback(type?: FeedbackType | 'all'): Promise<FeedbackItem[]> {
   if (isRemoteBackend) return remote.listFeedback(type);
-  const items = load().sort((a, b) => b.createdAt - a.createdAt);
-  return resolve(!type || type === 'all' ? items : items.filter((i) => i.type === type));
+  const items = mergeWithServer(await serverOrEmpty(() => remote.listFeedback(type)), load()).sort((a, b) => b.createdAt - a.createdAt);
+  return !type || type === 'all' ? items : items.filter((i) => i.type === type);
 }
 
 export function createFeedback(
@@ -31,6 +32,7 @@ export function createFeedback(
 
 export function updateFeedbackStatus(id: string, status: FeedbackStatus): Promise<void> {
   if (isRemoteBackend) return remote.updateFeedbackStatus(id, status);
+  if (publicReads()) patchItem(id, { status });
   save(load().map((i) => (i.id === id ? { ...i, status } : i)));
   return resolve(undefined);
 }

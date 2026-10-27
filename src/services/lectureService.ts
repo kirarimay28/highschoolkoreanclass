@@ -3,6 +3,7 @@ import { lectureUnits } from '@/config/lectures';
 import type { SubjectId, User } from '@/types';
 import type { Lecture, LectureInput, LectureMemo, LectureProgress } from '@/types/lecture';
 import { deleteBlob, getBlob, putBlob } from './blobStore';
+import { hideItem, mergeWithServer, patchItem, publicReads, serverOrEmpty } from './professorOverlay';
 import * as remote from './remote/lectureRemote';
 import { STORAGE_KEYS, createId, readJSON, writeJSON } from './storage';
 
@@ -24,7 +25,9 @@ export function sortLectures(list: Lecture[], subjectId: SubjectId): Lecture[] {
 }
 
 export async function listLectures(subjectId: SubjectId): Promise<Lecture[]> {
-  const list = isRemoteBackend ? await remote.listLectures(subjectId) : loadAll().filter((l) => l.subjectId === subjectId);
+  const list = isRemoteBackend
+    ? await remote.listLectures(subjectId)
+    : mergeWithServer(await serverOrEmpty(() => remote.listLectures(subjectId)), loadAll().filter((l) => l.subjectId === subjectId));
   return sortLectures(list, subjectId);
 }
 
@@ -137,12 +140,14 @@ export async function updateLecture(lecture: Lecture, patch: LecturePatch): Prom
   }
   const next = { ...patch, order, description: patch.description || undefined };
   if (isRemoteBackend) return remote.updateLecture(lecture.id, next);
+  if (publicReads()) patchItem(lecture.id, next);
   saveAll(loadAll().map((l) => (l.id === lecture.id ? { ...l, ...next } : l)));
 }
 
 export async function deleteLecture(lecture: Lecture): Promise<void> {
   if (isRemoteBackend) await remote.deleteLecture(lecture.id);
   else {
+    if (publicReads()) hideItem(lecture.id);
     saveAll(loadAll().filter((l) => l.id !== lecture.id));
     writeJSON(STORAGE_KEYS.lectureMemos, readJSON<StoredMemo[]>(STORAGE_KEYS.lectureMemos, []).filter((m) => m.lectureId !== lecture.id));
   }
@@ -158,6 +163,7 @@ export async function moveLecture(lecture: Lecture, dir: -1 | 1): Promise<void> 
   [siblings[i], siblings[j]] = [siblings[j], siblings[i]];
   const orders = siblings.map((l, k) => ({ id: l.id, order: k }));
   if (isRemoteBackend) return remote.setOrders(orders.filter((o, k) => siblings[k].order !== o.order));
+  if (publicReads()) orders.forEach((o) => patchItem(o.id, { order: o.order }));
   const byId = new Map(orders.map((o) => [o.id, o.order]));
   saveAll(loadAll().map((l) => (byId.has(l.id) ? { ...l, order: byId.get(l.id)! } : l)));
 }

@@ -1,10 +1,10 @@
 import { professorAccount } from '@/config/professorQuiz';
 import { teachersMock } from '@/data/teachers.mock';
 import type { User } from '@/types';
-import { isRemoteBackend } from '@/config/backend';
+import { isBackendConfigured, isRemoteBackend, isSandbox, setSandbox } from '@/config/backend';
 import * as remote from './remote/authRemote';
-import { describeStudentId, findStudent, registerStudent } from './rosterService';
-import { STORAGE_KEYS, readJSON, removeKey, writeJSON } from './storage';
+import { describeStudentId, findStudent } from './rosterService';
+import { STORAGE_KEYS, clearSandbox, readJSON, removeKey, writeJSON } from './storage';
 
 /**
  * 인증 서비스 (mock)
@@ -50,27 +50,13 @@ export async function loginTeacher(staffId: string, password: string): Promise<U
 }
 
 /**
- * 교수자 퀴즈를 모두 통과했을 때 호출 — 실제 계정과 똑같이 동작
- *  · Supabase 사용 시: 교수자용 선생님 계정으로 로그인 (password 필요)
- *  · 학생 화면용 학생(professorAccount.studentId)이 명단에 없으면 등록
+ * 교수자 퀴즈를 모두 통과했을 때 호출 — 교수자 모드 시작
+ * 서버가 있으면: 공개된 실제 내용은 서버에서 읽고, 교수자가 쓴 내용은 이 탭에만 (실제 데이터에 남지 않음)
  */
-export async function loginProfessor(password?: string): Promise<User> {
-  let teacher: User;
-  if (isRemoteBackend) {
-    try {
-      teacher = await remote.signInTeacher(professorAccount.email, password ?? '');
-    } catch (err) {
-      throw new AuthError(
-        /올바르지/.test((err as Error).message)
-          ? '비밀번호가 올바르지 않아요. (Supabase 에 교수자 계정이 없어도 이렇게 나와요)'
-          : (err as Error).message,
-      );
-    }
-  } else teacher = { id: `teacher:${professorAccount.id}`, name: professorAccount.name, role: 'teacher' };
-  if (!(await findStudent(professorAccount.name, professorAccount.studentId))) {
-    await registerStudent(teacher, { name: professorAccount.name, studentId: professorAccount.studentId }).catch((e) => console.warn('[professor] 학생 등록 실패', e));
-  }
-  return saveSession({ id: `professor:${professorAccount.id}`, name: professorAccount.name, role: 'professor', teacherId: teacher.id });
+export async function loginProfessor(): Promise<User> {
+  clearSandbox();
+  if (isBackendConfigured) setSandbox(true);
+  return saveSession({ id: `professor:${professorAccount.id}`, name: professorAccount.name, role: 'professor' });
 }
 
 export function getSessionUser(): User | null {
@@ -79,6 +65,12 @@ export function getSessionUser(): User | null {
 
 export async function logout(): Promise<void> {
   removeKey(STORAGE_KEYS.session);
+  // 교수자 체험 모드에서 만든 내용은 모두 지움
+  if (isSandbox) {
+    clearSandbox();
+    setSandbox(false);
+    return;
+  }
   if (isRemoteBackend) await remote.signOut().catch(() => undefined);
 }
 
@@ -102,7 +94,7 @@ export async function requestPasswordReset(email: string): Promise<void> {
 
 /** 앱 시작 시: 선생님 서버 로그인이 끊겼으면 세션을 정리 (true = 그대로 유지) */
 export async function verifySession(user: User | null): Promise<boolean> {
-  if (!user || !isRemoteBackend || user.role === 'student') return true;
+  if (!user || !isRemoteBackend || user.role !== 'teacher') return true;
   if (await remote.hasTeacherSession()) return true;
   removeKey(STORAGE_KEYS.session);
   return false;

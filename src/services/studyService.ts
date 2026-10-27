@@ -2,6 +2,7 @@ import type { RankingPeriod } from '@/config/studyroom';
 import type { StudyRecord, User } from '@/types';
 import { todayKey, weekKeys } from '@/utils/date';
 import { isRemoteBackend } from '@/config/backend';
+import { serverOrEmpty } from './professorOverlay';
 import * as remote from './remote/studyRemote';
 import { STORAGE_KEYS, readJSON, resolve, writeJSON } from './storage';
 
@@ -48,7 +49,7 @@ export interface RankingEntry {
 export async function getRanking(period: RankingPeriod): Promise<RankingEntry[]> {
   const dates = new Set(period === 'daily' ? [todayKey()] : weekKeys());
   const totals = new Map<string, { userName: string; seconds: number }>();
-  (isRemoteBackend ? await remote.listRecordsByDates([...dates]) : load())
+  (isRemoteBackend ? await remote.listRecordsByDates([...dates]) : [...(await serverOrEmpty(() => remote.listRecordsByDates([...dates]))), ...load()])
     .filter((r) => dates.has(r.date))
     .forEach((r) => {
       const cur = totals.get(r.userId) ?? { userName: r.userName, seconds: 0 };

@@ -2,6 +2,7 @@ import { isRemoteBackend } from '@/config/backend';
 import { defaultPassages } from '@/data/readingPassages';
 import type { User } from '@/types';
 import type { Diagram, GalleryItem, ReadingPassage, StructureActivity, StructureMode, StructureNotes, StructureWork } from '@/types/structure';
+import { serverOrEmpty } from './professorOverlay';
 import * as remote from './remote/structureRemote';
 import { STORAGE_KEYS, createId, readJSON, writeJSON } from './storage';
 
@@ -29,7 +30,9 @@ function merge(saved: ReadingPassage[]): ReadingPassage[] {
 
 export async function listPassages(user: User): Promise<ReadingPassage[]> {
   if (isRemoteBackend) return merge(await remote.listPassages(user));
-  return merge(loadPassages());
+  // 교수자 모드: 학생에게 공개된 실제 지문(모범 구조도 제외) + 교수자가 고친 지문
+  const server = await serverOrEmpty(() => remote.listPassages({ ...user, role: 'student' }));
+  return merge([...server, ...loadPassages()]);
 }
 
 export async function savePassage(user: User, passage: ReadingPassage): Promise<void> {
@@ -116,7 +119,8 @@ export async function updateSubmission(id: string, patch: { teacherComment?: str
 
 export async function listGallery(passageId: string): Promise<GalleryItem[]> {
   if (isRemoteBackend) return remote.listGallery(passageId);
-  return loadWorks()
+  const server = await serverOrEmpty(() => remote.listGallery(passageId));
+  return server.concat(loadWorks()
     .filter((w) => w.passageId === passageId && w.shared && w.firstSubmission)
-    .map((w) => ({ id: w.id, activity: w.activity, studentName: w.shareName ? w.studentName : undefined, diagram: w.revised ?? w.firstSubmission!, teacherComment: w.teacherComment }));
+    .map((w) => ({ id: w.id, activity: w.activity, studentName: w.shareName ? w.studentName : undefined, diagram: w.revised ?? w.firstSubmission!, teacherComment: w.teacherComment })));
 }

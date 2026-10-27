@@ -6,7 +6,27 @@
  * 화면(페이지) 코드는 건드릴 필요가 없습니다.
  */
 
+import { isSandbox } from '@/config/backend';
+
 const PREFIX = 'hkc:'; // highschool korean class
+const SANDBOX_PREFIX = 'hkc-sandbox:';
+
+/**
+ * 교수자 체험 모드에서는 이 탭에서만 유지되는 sessionStorage 에 따로 저장 (로그인 정보 제외).
+ * 로그아웃하면 clearSandbox() 로 모두 지움.
+ */
+function area(key: string): { store: Storage; name: string } {
+  if (isSandbox && key !== 'session') return { store: sessionStorage, name: SANDBOX_PREFIX + key };
+  return { store: localStorage, name: PREFIX + key };
+}
+
+export function clearSandbox(): void {
+  try {
+    for (const k of Object.keys(sessionStorage)) if (k.startsWith(SANDBOX_PREFIX)) sessionStorage.removeItem(k);
+  } catch {
+    /* noop */
+  }
+}
 
 export const STORAGE_KEYS = {
   session: 'session',
@@ -25,13 +45,15 @@ export const STORAGE_KEYS = {
   lectureMemos: 'lectureMemos',
   vocabAttempts: 'vocabAttempts',
   professorView: 'professorView',
+  professorOverlay: 'professorOverlay',
   notificationsSeen: 'notificationsSeen',
   seeded: 'seeded:v1',
 } as const;
 
 export function readJSON<T>(key: string, fallback: T): T {
   try {
-    const raw = localStorage.getItem(PREFIX + key);
+    const { store, name } = area(key);
+    const raw = store.getItem(name);
     return raw ? (JSON.parse(raw) as T) : fallback;
   } catch {
     return fallback;
@@ -40,7 +62,8 @@ export function readJSON<T>(key: string, fallback: T): T {
 
 export function writeJSON<T>(key: string, value: T): void {
   try {
-    localStorage.setItem(PREFIX + key, JSON.stringify(value));
+    const { store, name } = area(key);
+    store.setItem(name, JSON.stringify(value));
   } catch (err) {
     console.warn('[storage] 저장 실패 (용량 초과 가능)', err);
     throw err;
@@ -49,7 +72,8 @@ export function writeJSON<T>(key: string, value: T): void {
 
 export function removeKey(key: string): void {
   try {
-    localStorage.removeItem(PREFIX + key);
+    const { store, name } = area(key);
+    store.removeItem(name);
   } catch {
     /* noop */
   }

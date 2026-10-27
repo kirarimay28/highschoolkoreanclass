@@ -31,8 +31,9 @@ export function AppLayout() {
   };
 
   return (
-    <DesignNoteProvider>
     <div className="relative isolate flex min-h-dvh flex-col">
+    {/* 안에 두어야 모달(z-50)이 오른쪽 아래 "설계 의도" 버튼(z-40)보다 위에 옴 */}
+    <DesignNoteProvider>
       <BackgroundDecor crane={false} />
 
       <header className="glass sticky top-0 z-30 border-b border-white/80 shadow-[0_1px_0_rgb(var(--color-gold)/0.25)]">
@@ -85,7 +86,7 @@ export function AppLayout() {
       <footer className="py-6 text-center text-xs text-ink-faint">{appConfig.footer}</footer>
 
       {user && <SideDrawer open={drawerOpen} user={user} onClose={closeDrawer} onLogout={handleLogout} />}
-    </div>
     </DesignNoteProvider>
+    </div>
   );
 }
