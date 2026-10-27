@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { RoyalButton } from '@/components/common/RoyalButton';
 import { professorQuiz, professorQuizText } from '@/config/professorQuiz';
-import { loginProfessor } from '@/services/authService';
+import { isRemoteBackend } from '@/config/backend';
+import { AuthError, loginProfessor } from '@/services/authService';
 import { cn } from '@/utils/format';
 import { GoldSparkles } from './GoldSparkles';
 import type { LoginFormProps } from './loginForms';
@@ -18,6 +19,10 @@ export function ProfessorQuizForm({ onSuccess }: LoginFormProps) {
   const [successText, setSuccessText] = useState('');
 
   const [typed, setTyped] = useState('');
+  const [needPassword, setNeedPassword] = useState(false);
+  const [password, setPassword] = useState('');
+  const [pwError, setPwError] = useState('');
+  const [busy, setBusy] = useState(false);
   const question = professorQuiz[step];
   const isInput = question.choices.length === 0;
 
@@ -37,9 +42,25 @@ export function ProfessorQuizForm({ onSuccess }: LoginFormProps) {
       return;
     }
     setSuccessText(question.choiceMessages?.[choice] ?? professorQuizText.success);
+    // 서버 사용 시: 교수자용 선생님 계정 비밀번호를 한 번 더 받음
+    if (isRemoteBackend) return setNeedPassword(true);
     setSolved(true);
     const user = await loginProfessor();
     setTimeout(() => onSuccess(user), SUCCESS_DELAY_MS);
+  };
+
+  const submitPassword = async () => {
+    setPwError('');
+    setBusy(true);
+    try {
+      const user = await loginProfessor(password);
+      setSolved(true);
+      setTimeout(() => onSuccess(user), SUCCESS_DELAY_MS);
+    } catch (e) {
+      setPwError(e instanceof AuthError ? e.message : '로그인하지 못했어요. 잠시 후 다시 시도해 주세요.');
+    } finally {
+      setBusy(false);
+    }
   };
 
   return (
@@ -60,6 +81,35 @@ export function ProfessorQuizForm({ onSuccess }: LoginFormProps) {
         ))}
       </div>
 
+      {needPassword ? (
+        <form
+          className="animate-fade-up space-y-3"
+          onSubmit={(e) => {
+            e.preventDefault();
+            if (password && !busy) submitPassword();
+          }}
+        >
+          <p className="text-center font-serif text-[15px] font-bold text-gold-dark">{successText}</p>
+          <h3 className="text-center text-lg font-bold">교수자 계정 비밀번호</h3>
+          <input
+            type="password"
+            className="royal-input text-center"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            placeholder="비밀번호"
+            aria-label="교수자 계정 비밀번호"
+            autoComplete="current-password"
+            autoFocus
+          />
+          <RoyalButton type="submit" fullWidth disabled={!password || busy || solved}>
+            {busy ? '확인 중…' : '입장하기'}
+          </RoyalButton>
+          <p className="min-h-[1.5rem] text-center text-sm text-royal-light" aria-live="polite">
+            {solved ? '입장합니다.' : pwError}
+          </p>
+        </form>
+      ) : (
+      <>
       <div key={question.id} className="animate-fade-up">
         <p className="mb-1 text-center font-serif text-sm text-gold-dark">제{step + 1}문</p>
         <h3 className="mb-5 text-center text-lg font-bold sm:text-xl">{question.question}</h3>
@@ -115,6 +165,8 @@ export function ProfessorQuizForm({ onSuccess }: LoginFormProps) {
       >
         {solved ? successText : message}
       </p>
+      </>
+      )}
     </div>
   );
 }

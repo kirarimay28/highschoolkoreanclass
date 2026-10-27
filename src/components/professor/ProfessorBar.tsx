@@ -16,8 +16,8 @@ export function ProfessorBar() {
         <p className="flex min-w-0 items-center gap-1.5 text-xs text-ink-soft">
           <Seal size={18} />
           <span>
-            <b className="text-royal">교수자 체험 모드</b>
-            <span className="hidden sm:inline"> · 샘플 데이터로 보여요. 작성·수정·삭제한 내용은 로그아웃하면 사라져요.</span>
+            <b className="text-royal">교수자 모드</b>
+            <span className="hidden sm:inline"> · 실제 학생·선생님과 같은 화면이에요. 작성·수정·삭제한 내용은 실제로 남아요.</span>
           </span>
         </p>
         <div role="radiogroup" aria-label="보는 시점" className="flex rounded-full border border-gold/40 bg-white/70 p-0.5">

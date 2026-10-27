@@ -1,7 +1,7 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from 'react';
-import { studentsMock } from '@/data/students.mock';
-import { teachersMock } from '@/data/teachers.mock';
+import { professorAccount } from '@/config/professorQuiz';
 import * as authService from '@/services/authService';
+import { describeStudentId } from '@/services/rosterService';
 import { STORAGE_KEYS, readJSON, writeJSON } from '@/services/storage';
 import type { User } from '@/types';
 
@@ -24,10 +24,10 @@ interface AuthContextValue {
 
 const AuthContext = createContext<AuthContextValue | null>(null);
 
-/** 교수자 체험용 사용자 — 이름은 교수자 본인, 역할만 샘플 학생·선생님 자리를 빌림 */
+/** 교수자가 보는 시점의 사용자 — 실제 선생님 계정 / 실제 명단의 학생 (config/professorQuiz.ts) */
 function borrowedUser(account: User, view: ProfessorView): User {
-  if (view === 'teacher') return { id: `teacher:${teachersMock[0].staffId}`, name: account.name, role: 'teacher', meta: '선생님 시점' };
-  return { id: `student:${studentsMock[0].studentId}`, name: account.name, role: 'student', meta: '학생 시점' };
+  if (view === 'teacher') return { id: account.teacherId ?? `teacher:${professorAccount.id}`, name: account.name, role: 'teacher' };
+  return { id: `student:${professorAccount.studentId}`, name: account.name, role: 'student', meta: describeStudentId(professorAccount.studentId) };
 }
 
 export function AuthProvider({ children }: { children: ReactNode }) {

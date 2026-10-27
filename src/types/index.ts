@@ -8,6 +8,8 @@ export interface User {
   role: Role;
   /** 학생: "2학년 3반" 같은 부가 정보 */
   meta?: string;
+  /** 교수자: [선생님 화면으로 보기]에서 쓰는 실제 선생님 계정 id */
+  teacherId?: string;
 }
 
 /** 선생님이 등록한 학생 (등록된 학생만 로그인 가능) */
