@@ -11,8 +11,10 @@ export interface QuizQuestion {
   /** 직접 입력 문항의 입력칸 안내 */
   placeholder?: string;
   answer: string;
-  /** 오답 시 번갈아 보여줄 문구 */
+  /** 오답 시 보여줄 문구 — choiceMessages 에 없는 오답일 때 */
   wrongMessages: string[];
+  /** 선택지별 문구 (정답에 적으면 맞혔을 때 그 문구가 나옴) */
+  choiceMessages?: Record<string, string>;
 }
 
 export const professorQuiz: QuizQuestion[] = [
@@ -29,22 +31,23 @@ export const professorQuiz: QuizQuestion[] = [
     question: '이 과목의 이름은 무엇인가요?',
     choices: ['AI디지털학습환경설계', 'AI돼지털학습환경설계', 'AI디지털환경학습설계'],
     answer: 'AI디지털학습환경설계',
-    wrongMessages: [
-      '과목명이 살짝 달라요. 다시 확인해 주세요.',
-      '꿀꿀… 아니에요. 다시 골라 주세요.',
-      '글자 순서가 바뀐 것 같아요.',
-    ],
+    wrongMessages: ['과목명이 살짝 달라요. 다시 확인해 주세요.'],
+    choiceMessages: {
+      AI돼지털학습환경설계: '꿀꿀... 아니에요 다시 골라주세요',
+      AI디지털환경학습설계: '글자 순서가 바뀐 것 같아요😱',
+    },
   },
   {
     id: 'grade',
     question: "이번 학기 '문서연' 학생에게 주고 싶은 학점은 어떤 것인가요?",
     choices: ['A+', 'B', 'C'],
     answer: 'A+',
-    wrongMessages: [
-      '다시 한번 생각해 주세요.',
-      '정말요…? 한 번만 더 생각해 주세요.',
-      '그 학점은 안 돼요!',
-    ],
+    wrongMessages: ['다시 한번 생각해 주세요.'],
+    choiceMessages: {
+      B: '이렇게 열심히 만들었는데..!!!!',
+      C: '믿고 싶지 않아요...',
+      'A+': '정말이시죠? ❤️❤️❤️',
+    },
   },
 ];
 

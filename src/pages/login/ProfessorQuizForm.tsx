@@ -15,6 +15,7 @@ export function ProfessorQuizForm({ onSuccess }: LoginFormProps) {
   const [message, setMessage] = useState('');
   const [shaking, setShaking] = useState<string | null>(null);
   const [solved, setSolved] = useState(false);
+  const [successText, setSuccessText] = useState('');
 
   const [typed, setTyped] = useState('');
   const question = professorQuiz[step];
@@ -24,7 +25,7 @@ export function ProfessorQuizForm({ onSuccess }: LoginFormProps) {
     if (solved) return;
     const ok = isInput ? choice.replace(/\s/g, '') === question.answer.replace(/\s/g, '') : choice === question.answer;
     if (!ok) {
-      setMessage(question.wrongMessages[wrongCount % question.wrongMessages.length]);
+      setMessage(question.choiceMessages?.[choice] ?? question.wrongMessages[wrongCount % question.wrongMessages.length]);
       setWrongCount((n) => n + 1);
       setShaking(isInput ? 'input' : choice);
       return;
@@ -35,6 +36,7 @@ export function ProfessorQuizForm({ onSuccess }: LoginFormProps) {
       setStep(step + 1);
       return;
     }
+    setSuccessText(question.choiceMessages?.[choice] ?? professorQuizText.success);
     setSolved(true);
     const user = await loginProfessor();
     setTimeout(() => onSuccess(user), SUCCESS_DELAY_MS);
@@ -111,7 +113,7 @@ export function ProfessorQuizForm({ onSuccess }: LoginFormProps) {
         )}
         aria-live="polite"
       >
-        {solved ? professorQuizText.success : message}
+        {solved ? successText : message}
       </p>
     </div>
   );
