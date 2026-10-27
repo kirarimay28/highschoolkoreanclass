@@ -19,9 +19,9 @@ export const professorQuiz: QuizQuestion[] = [
     choices: ['AI디지털학습환경설계', 'AI돼지털학습환경설계', 'AI디지털환경학습설계'],
     answer: 'AI디지털학습환경설계',
     wrongMessages: [
-      '전하, 과목명이 살짝 어긋났사옵니다. 다시 살펴 주시옵소서.',
-      '꿀꿀… 아니옵니다. 다시 한번 골라 주시옵소서.',
-      '글자 순서가 뒤바뀐 듯하옵니다, 전하.',
+      '과목명이 살짝 달라요. 다시 확인해 주세요.',
+      '꿀꿀… 아니에요. 다시 골라 주세요.',
+      '글자 순서가 바뀐 것 같아요.',
     ],
   },
   {
@@ -30,9 +30,9 @@ export const professorQuiz: QuizQuestion[] = [
     choices: ['A+', 'B', 'C'],
     answer: 'A+',
     wrongMessages: [
-      '전하, 다시 한번 숙고하여 주시옵소서.',
-      '신하들이 술렁이옵니다… 한 번 더 굽어살펴 주시옵소서.',
-      '성은이 망극하오나, 그 학점은 아니 될 말씀이옵니다.',
+      '다시 한번 생각해 주세요.',
+      '정말요…? 한 번만 더 생각해 주세요.',
+      '그 학점은 안 돼요!',
     ],
   },
 ];
@@ -44,6 +44,6 @@ export const professorAccount = {
 } as const;
 
 export const professorQuizText = {
-  intro: '어전(御前) 문답에 모두 답하시면 입장하실 수 있사옵니다.',
-  success: '성은이 망극하옵니다! 입장하시옵소서.',
+  intro: '질문에 모두 맞히면 입장할 수 있어요.',
+  success: '정답이에요! 입장합니다.',
 };

@@ -16,7 +16,7 @@ export interface LoginRoleOption {
 export const loginRoles: LoginRoleOption[] = [
   { id: 'student', label: '학생용', description: '학번과 비밀번호로 입장', icon: 'graduation' },
   { id: 'teacher', label: '선생님용', description: '교직원 ID로 입장', icon: 'feather' },
-  { id: 'professor', label: '교수자용', description: '어전(御前) 문답으로 입장', icon: 'crown' },
+  { id: 'professor', label: '교수자용', description: '퀴즈를 풀고 입장', icon: 'crown' },
 ];
 
 /** 이름 뒤에 붙는 호칭 (예: 김하늘님, 정국어 선생님) */
