@@ -20,7 +20,7 @@ export const loginRoles: LoginRoleOption[] = [
   { id: 'professor', label: '교수자용', description: '퀴즈를 풀고 입장', icon: 'crown' },
 ];
 
-/** 이름 뒤에 붙는 호칭 (예: 김하늘님, 정국어 선생님) */
+/** 이름 뒤에 붙는 호칭 (예: 김하늘님, 문서연 선생님) */
 export const roleHonorifics: Record<Role, string> = {
   student: '님',
   teacher: ' 선생님',

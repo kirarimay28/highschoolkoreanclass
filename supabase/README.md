@@ -13,7 +13,7 @@
    이메일·비밀번호 입력, **Auto Confirm User** 체크 → Create
 2. **SQL Editor** 에서 실행 (이메일·이름만 바꾸기):
    ```sql
-   select public.add_teacher('teacher@school.kr', '정국어');
+   select public.add_teacher('teacher@school.kr', '문서연');
    ```
 3. (권장) **Authentication → Sign In / Providers** 에서 **Allow new users to sign up** 끄기
 

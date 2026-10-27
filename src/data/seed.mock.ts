@@ -48,7 +48,7 @@ export function buildSeed(now = Date.now()) {
         {
           id: 'c_seed1',
           authorId: 'teacher:teacher01',
-          authorName: '정국어',
+          authorName: '문서연',
           authorRole: 'teacher',
           anonymous: false,
           content: '여정에 따라 "연군지정 ↔ 선정(仙情)" 사이의 갈등이 어떻게 드러나는지 표로 정리해 보세요. 다음 시간에 같이 봐요!',
@@ -79,7 +79,7 @@ export function buildSeed(now = Date.now()) {
       fileName: '고전시가_흐름.pdf',
       fileType: 'pdf',
       size: 2_340_000,
-      uploaderName: '정국어',
+      uploaderName: '문서연',
       uploadedAt: now - 72 * HOUR,
     },
     {
@@ -89,7 +89,7 @@ export function buildSeed(now = Date.now()) {
       fileName: '논증구조_활동지.pptx',
       fileType: 'pptx',
       size: 5_120_000,
-      uploaderName: '정국어',
+      uploaderName: '문서연',
       uploadedAt: now - 30 * HOUR,
     },
     {

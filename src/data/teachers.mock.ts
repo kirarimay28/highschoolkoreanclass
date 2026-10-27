@@ -6,6 +6,6 @@ export interface TeacherRecord {
 }
 
 export const teachersMock: TeacherRecord[] = [
-  { staffId: 'teacher01', name: '정국어', password: 'teacher' },
+  { staffId: 'teacher01', name: '문서연', password: 'teacher' },
   { staffId: 'teacher02', name: '한문학', password: 'teacher' },
 ];

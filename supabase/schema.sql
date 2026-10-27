@@ -28,7 +28,7 @@ create policy "teachers read own" on public.teachers
   for select to authenticated using (id = auth.uid());
 
 -- 선생님 추가: Authentication → Users 에서 계정을 만든 뒤
---   select public.add_teacher('선생님이메일@학교.kr', '정국어');
+--   select public.add_teacher('선생님이메일@학교.kr', '문서연');
 create or replace function public.add_teacher(p_email text, p_name text)
 returns text
 language plpgsql security definer set search_path = public
