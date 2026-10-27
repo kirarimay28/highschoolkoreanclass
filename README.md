@@ -12,6 +12,12 @@ npm run build      # 타입 검사 + 프로덕션 빌드 (dist/)
 npm run preview    # 빌드 결과 미리보기
 ```
 
+**배포:** 기본 브랜치에 푸시하면 GitHub Actions 가 자동으로 GitHub Pages 에 올립니다 (`.github/workflows/deploy.yml`).
+주소: https://kirarimay28.github.io/highschoolkoreanclass/
+
+```bash
+```
+
 샘플 데이터를 초기화하려면 브라우저 개발자 도구에서 `hkc:` 로 시작하는 localStorage 항목을 지우고 새로고침하세요.
 
 ## 테스트 계정
