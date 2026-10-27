@@ -78,6 +78,7 @@ export const subjects: SubjectConfig[] = [
     // 주홍(朱紅) — 밝고 또렷한 목소리
     accent: { accent: '178 62 34', gold: '214 172 52', tint: '226 140 92' },
     sections: [
+      { id: 'lectures', title: '개념 복습 강의', description: '음운·단어·문장·담화·화법 개념을 영상으로 스스로 복습해요', icon: 'play', path: 'lectures' },
       { id: 'lessons', title: '수업 진도', description: '화법 갈래와 국어 문법 차시별 정리', icon: 'book' },
       { id: 'activities', title: '활동지', description: '토론·발표·문법 탐구 활동', icon: 'notebook' },
       { id: 'assignments', title: '과제', description: '발표 준비·탐구 보고서와 마감일', icon: 'todo' },

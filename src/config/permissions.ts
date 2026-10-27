@@ -14,6 +14,8 @@ export const permissions = {
   seeAnonymousAuthor: ['teacher', 'professor'],
   /** DIY 구조도: 학생 제출 열람·코멘트·갤러리 공유·지문 관리 */
   manageStructure: ['teacher', 'professor'],
+  /** 개념 복습 강의: 영상 올리기·수정·삭제·순서 바꾸기 (조회 수만 보임) */
+  manageLectures: ['teacher', 'professor'],
   /** 학생 등록·삭제 */
   manageStudents: ['teacher', 'professor'],
   /** 게시판 글 삭제(타인 글 포함) */

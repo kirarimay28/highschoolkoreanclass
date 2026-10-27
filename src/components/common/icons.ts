@@ -4,7 +4,14 @@
  * 실제 컴포넌트 매핑은 여기서 합니다. 새 아이콘이 필요하면 lucide-react 에서 import 후 추가하세요.
  */
 import {
+  ArrowDown,
+  ArrowUp,
   Bell,
+  ExternalLink,
+  Eye,
+  Lock,
+  Pencil,
+  Play,
   BookOpen,
   BookMarked,
   CalendarDays,
@@ -90,6 +97,13 @@ export const iconRegistry = {
   users: UsersRound,
   wrench: Wrench,
   close: X,
+  play: Play,
+  edit: Pencil,
+  lock: Lock,
+  external: ExternalLink,
+  eye: Eye,
+  up: ArrowUp,
+  down: ArrowDown,
 } satisfies Record<string, LucideIcon>;
 
 export type IconName = keyof typeof iconRegistry;

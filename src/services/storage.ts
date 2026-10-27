@@ -20,6 +20,9 @@ export const STORAGE_KEYS = {
   passages: 'passages',
   structureWorks: 'structureWorks',
   structureNotes: 'structureNotes',
+  lectures: 'lectures',
+  lectureProgress: 'lectureProgress',
+  lectureMemos: 'lectureMemos',
   notificationsSeen: 'notificationsSeen',
   seeded: 'seeded:v1',
 } as const;
