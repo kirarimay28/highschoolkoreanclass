@@ -1,5 +1,7 @@
-import { Link } from 'react-router-dom';
+import { Link, useOutletContext } from 'react-router-dom';
+import { Icon } from '@/components/common/Icon';
 import { IconTile } from '@/components/common/IconTile';
+import type { AppLayoutContext } from '@/components/layout/AppLayout';
 import { CloudDivider } from '@/components/motifs/CloudDivider';
 import { lobbyMenu } from '@/config/lobbyMenu';
 import { roleLabels, withHonorific } from '@/config/roles';
@@ -7,10 +9,13 @@ import { useCurrentUser } from '@/context/AuthContext';
 
 export function LobbyPage() {
   const user = useCurrentUser();
-  const menu = lobbyMenu.filter((m) => !m.roles || m.roles.includes(user.role));
+  const { openMenu } = useOutletContext<AppLayoutContext>();
+  const visible = lobbyMenu.filter((m) => !m.roles || m.roles.includes(user.role));
+  const cards = visible.filter((m) => m.showInLobby);
+  const others = visible.filter((m) => !m.showInLobby);
 
   return (
-    <div>
+    <div className="mx-auto max-w-4xl">
       <section className="mb-6 text-center sm:mb-8">
         <p className="font-serif text-sm text-gold-dark">{roleLabels[user.role]}</p>
         <h1 className="title-gradient mt-1 pb-1 text-3xl font-bold sm:text-4xl">{withHonorific(user)}, 어서 오세요</h1>
@@ -18,22 +23,33 @@ export function LobbyPage() {
         <CloudDivider className="mx-auto mt-4 max-w-md" />
       </section>
 
-      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4 lg:grid-cols-3">
-        {menu.map((item, i) => (
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-5">
+        {cards.map((item, i) => (
           <Link
             key={item.id}
             to={item.path}
-            style={{ animationDelay: `${i * 50}ms` }}
-            className="royal-card group flex animate-fade-up items-center gap-4 p-4 transition-all duration-200 hover:-translate-y-1 hover:shadow-glow sm:flex-col sm:items-start sm:p-6"
+            style={{ animationDelay: `${i * 60}ms` }}
+            className="royal-card group flex animate-fade-up items-center gap-4 p-5 transition-all duration-200 hover:-translate-y-1 hover:shadow-glow sm:flex-col sm:items-start sm:gap-5 sm:p-8"
           >
             <IconTile icon={item.icon} tone={item.tone} size="lg" className="transition-transform group-hover:scale-105" />
             <div className="min-w-0">
-              <h2 className="text-lg font-bold group-hover:text-royal sm:text-xl">{item.title}</h2>
-              <p className="mt-0.5 text-sm text-ink-soft">{item.description}</p>
+              <h2 className="text-xl font-bold group-hover:text-royal sm:text-2xl">{item.title}</h2>
+              <p className="mt-1 text-sm text-ink-soft sm:text-[15px]">{item.description}</p>
             </div>
           </Link>
         ))}
       </div>
+
+      {others.length > 0 && (
+        <button
+          type="button"
+          onClick={openMenu}
+          className="mx-auto mt-6 flex items-center gap-2 rounded-full px-4 py-2 text-sm text-ink-soft transition-colors hover:bg-royal/[0.05] hover:text-royal"
+        >
+          <Icon name="menu" size={16} />
+          게시판 · 도서관 등 전체 메뉴 보기
+        </button>
+      )}
     </div>
   );
 }
