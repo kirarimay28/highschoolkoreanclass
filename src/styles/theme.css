@@ -32,7 +32,7 @@
 
   /* 폰트 */
   --font-serif: 'Gowun Batang', 'Nanum Myeongjo', serif;
-  --font-sans: 'Pretendard Variable', Pretendard, -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo',
+  --font-sans: 'Pretendard Variable', Pretendard, 'Noto Sans KR', -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo',
     'Malgun Gothic', system-ui, sans-serif;
 
   /* 둥글기 — 옷깃(둥근 깃) 곡선 */
