@@ -16,14 +16,17 @@ export function ProfessorQuizForm({ onSuccess }: LoginFormProps) {
   const [shaking, setShaking] = useState<string | null>(null);
   const [solved, setSolved] = useState(false);
 
+  const [typed, setTyped] = useState('');
   const question = professorQuiz[step];
+  const isInput = question.choices.length === 0;
 
   const choose = async (choice: string) => {
     if (solved) return;
-    if (choice !== question.answer) {
+    const ok = isInput ? choice.replace(/\s/g, '') === question.answer.replace(/\s/g, '') : choice === question.answer;
+    if (!ok) {
       setMessage(question.wrongMessages[wrongCount % question.wrongMessages.length]);
       setWrongCount((n) => n + 1);
-      setShaking(choice);
+      setShaking(isInput ? 'input' : choice);
       return;
     }
     setMessage('');
@@ -59,6 +62,29 @@ export function ProfessorQuizForm({ onSuccess }: LoginFormProps) {
         <p className="mb-1 text-center font-serif text-sm text-gold-dark">제{step + 1}문</p>
         <h3 className="mb-5 text-center text-lg font-bold sm:text-xl">{question.question}</h3>
 
+        {isInput ? (
+          <form
+            className="flex gap-2"
+            onSubmit={(e) => {
+              e.preventDefault();
+              if (typed.trim()) choose(typed);
+            }}
+          >
+            <input
+              className={cn('royal-input flex-1 text-center', shaking === 'input' && 'animate-shake')}
+              value={typed}
+              onChange={(e) => setTyped(e.target.value)}
+              onAnimationEnd={() => setShaking(null)}
+              placeholder={question.placeholder}
+              aria-label={question.question}
+              autoComplete="name"
+              autoFocus
+            />
+            <RoyalButton type="submit" disabled={!typed.trim()}>
+              확인
+            </RoyalButton>
+          </form>
+        ) : (
         <div className="grid gap-2 sm:gap-3" style={{ gridTemplateColumns: `repeat(${question.choices.length}, minmax(0, 1fr))` }}>
           {question.choices.map((choice) => (
             <RoyalButton
@@ -75,6 +101,7 @@ export function ProfessorQuizForm({ onSuccess }: LoginFormProps) {
             </RoyalButton>
           ))}
         </div>
+        )}
       </div>
 
       <p

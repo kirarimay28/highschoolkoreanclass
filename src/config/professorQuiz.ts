@@ -6,13 +6,24 @@
 export interface QuizQuestion {
   id: string;
   question: string;
+  /** 선택지. 비우면 직접 입력하는 문항 (띄어쓰기 무시하고 answer 와 비교) */
   choices: string[];
+  /** 직접 입력 문항의 입력칸 안내 */
+  placeholder?: string;
   answer: string;
   /** 오답 시 번갈아 보여줄 문구 */
   wrongMessages: string[];
 }
 
 export const professorQuiz: QuizQuestion[] = [
+  {
+    id: 'name',
+    question: '성함을 입력해 주세요.',
+    choices: [],
+    placeholder: '이름',
+    answer: '황현우',
+    wrongMessages: ['등록된 교수자 이름이 아니에요. 다시 확인해 주세요.'],
+  },
   {
     id: 'course-name',
     question: '이 과목의 이름은 무엇인가요?',
@@ -40,7 +51,7 @@ export const professorQuiz: QuizQuestion[] = [
 /** 퀴즈 통과 후 로그인되는 교수자 계정 정보 */
 export const professorAccount = {
   id: 'professor',
-  name: '교수님',
+  name: '황현우',
 } as const;
 
 export const professorQuizText = {

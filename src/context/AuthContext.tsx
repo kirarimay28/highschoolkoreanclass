@@ -2,7 +2,6 @@ import { createContext, useCallback, useContext, useEffect, useMemo, useState, t
 import { studentsMock } from '@/data/students.mock';
 import { teachersMock } from '@/data/teachers.mock';
 import * as authService from '@/services/authService';
-import { describeStudentId } from '@/services/rosterService';
 import { STORAGE_KEYS, readJSON, writeJSON } from '@/services/storage';
 import type { User } from '@/types';
 
@@ -25,14 +24,10 @@ interface AuthContextValue {
 
 const AuthContext = createContext<AuthContextValue | null>(null);
 
-/** 교수자 체험용 샘플 사용자 (실제 학생·선생님 정보가 아님) */
-function borrowedUser(view: ProfessorView): User {
-  if (view === 'teacher') {
-    const t = teachersMock[0];
-    return { id: `teacher:${t.staffId}`, name: t.name, role: 'teacher', meta: '체험용 샘플 계정' };
-  }
-  const s = studentsMock[0];
-  return { id: `student:${s.studentId}`, name: s.name, role: 'student', meta: describeStudentId(s.studentId) ?? '체험용 샘플 계정' };
+/** 교수자 체험용 사용자 — 이름은 교수자 본인, 역할만 샘플 학생·선생님 자리를 빌림 */
+function borrowedUser(account: User, view: ProfessorView): User {
+  if (view === 'teacher') return { id: `teacher:${teachersMock[0].staffId}`, name: account.name, role: 'teacher', meta: '선생님 시점' };
+  return { id: `student:${studentsMock[0].studentId}`, name: account.name, role: 'student', meta: '학생 시점' };
 }
 
 export function AuthProvider({ children }: { children: ReactNode }) {
@@ -57,7 +52,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const isProfessor = account?.role === 'professor';
-  const user = useMemo(() => (isProfessor ? borrowedUser(professorView) : account), [isProfessor, professorView, account]);
+  const user = useMemo(() => (isProfessor && account ? borrowedUser(account, professorView) : account), [isProfessor, professorView, account]);
 
   const value = useMemo(
     () => ({ user, role: user?.role ?? null, account, isProfessor, professorView, setProfessorView, signIn, signOut }),
