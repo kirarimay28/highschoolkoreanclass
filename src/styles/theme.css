@@ -1,0 +1,45 @@
+/*
+ * ─────────────────────────────────────────────
+ *  곤룡포(袞龍袍) 테마 토큰 — 색·폰트·둥글기·그림자
+ *  이 파일의 값만 바꾸면 앱 전체 톤이 바뀝니다.
+ *  색은 "R G B" 형식(Tailwind 투명도 문법 지원용)입니다.
+ * ─────────────────────────────────────────────
+ */
+:root {
+  /* 대홍(深紅) — 주색 */
+  --color-royal: 139 26 26;       /* #8B1A1A */
+  --color-royal-deep: 106 18 18;  /* #6A1212 */
+  --color-royal-light: 165 42 42; /* #A52A2A */
+
+  /* 금사(金絲) — 포인트 */
+  --color-gold: 201 162 39;       /* #C9A227 */
+  --color-gold-light: 230 205 120;/* #E6CD78 */
+  --color-gold-dark: 150 118 22;  /* #967616 */
+
+  /* 한지 — 배경 */
+  --color-hanji: 247 241 227;     /* #F7F1E3 */
+  --color-hanji-dark: 236 226 203;/* #ECE2CB */
+  --color-hanji-card: 252 249 241;/* #FCF9F1 */
+
+  /* 먹 — 텍스트 */
+  --color-ink: 43 43 43;          /* #2B2B2B */
+  --color-ink-soft: 92 86 78;     /* #5C564E */
+  --color-ink-faint: 150 142 128; /* #968E80 */
+
+  /* 쪽빛 — 링크/정보 (최소한으로) */
+  --color-indigo: 44 74 110;      /* #2C4A6E */
+  --color-success: 62 110 72;     /* #3E6E48 */
+
+  /* 폰트 */
+  --font-serif: 'Gowun Batang', 'Nanum Myeongjo', serif;
+  --font-sans: 'Pretendard Variable', Pretendard, -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo',
+    'Malgun Gothic', system-ui, sans-serif;
+
+  /* 둥글기 — 옷깃(둥근 깃) 곡선 */
+  --radius-collar: 1.25rem 1.25rem 1.25rem 1.25rem / 1.6rem 1.6rem 1rem 1rem; /* 위가 더 둥근 옷깃 곡선 */
+  --radius-card: 1.25rem;
+
+  /* 그림자 */
+  --shadow-card: 0 1px 0 rgb(var(--color-gold) / 0.25), 0 8px 24px -12px rgb(var(--color-royal-deep) / 0.25);
+  --shadow-glow: 0 0 0 1px rgb(var(--color-gold) / 0.6), 0 0 18px rgb(var(--color-gold) / 0.35);
+}

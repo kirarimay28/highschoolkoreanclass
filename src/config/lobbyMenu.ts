@@ -1,0 +1,62 @@
+import type { IconName } from '@/components/common/icons';
+import type { Role } from '@/types';
+
+export interface LobbyMenuItem {
+  id: string;
+  title: string;
+  description: string;
+  icon: IconName;
+  path: string;
+  /** 지정하면 해당 역할에게만 보임. 생략하면 모두에게 보임 */
+  roles?: Role[];
+}
+
+/**
+ * 로비 메뉴 카드.
+ * 항목을 추가/삭제/순서 변경하면 로비 화면이 그대로 바뀝니다.
+ * 새 path 를 추가했다면 src/routes.tsx 에 페이지도 연결해 주세요.
+ */
+export const lobbyMenu: LobbyMenuItem[] = [
+  {
+    id: 'subjects',
+    title: '과목 선택',
+    description: '문학 · 독서와 작문 · 화법과 언어',
+    icon: 'book',
+    path: '/subjects',
+  },
+  {
+    id: 'studyroom',
+    title: '온라인 스터디룸',
+    description: '플래너 · 타이머 · 랭킹 · 캘린더로 스스로 공부해요',
+    icon: 'timer',
+    path: '/studyroom',
+  },
+  {
+    id: 'board',
+    title: '질의응답 게시판',
+    description: '공부 · 생활 고민을 익명 또는 실명으로 물어보세요',
+    icon: 'messages',
+    path: '/board',
+  },
+  {
+    id: 'library',
+    title: '도서관',
+    description: '과목별 수업 자료(PPT, PDF)를 찾아보고 내려받아요',
+    icon: 'library',
+    path: '/library',
+  },
+  {
+    id: 'tutorial',
+    title: '튜토리얼',
+    description: '처음이라면 여기서 사용법을 익혀요',
+    icon: 'scroll',
+    path: '/tutorial',
+  },
+  {
+    id: 'feedback',
+    title: '고쳐주세요',
+    description: '버그 · 불편 사항 · 업데이트 요청을 남겨 주세요',
+    icon: 'wrench',
+    path: '/feedback',
+  },
+];

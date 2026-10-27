@@ -1,0 +1,48 @@
+@import './theme.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    -webkit-tap-highlight-color: transparent;
+  }
+  body {
+    @apply bg-hanji text-ink font-sans antialiased;
+    min-height: 100dvh;
+    /* 아주 옅은 한지 섬유 질감 */
+    background-image:
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.45 0 0 0 0 0.38 0 0 0 0 0.25 0 0 0 0.05 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+  h1, h2, h3, h4 {
+    @apply font-serif text-ink;
+  }
+  :focus-visible {
+    outline: 2px solid rgb(var(--color-gold));
+    outline-offset: 2px;
+  }
+}
+
+@layer components {
+  /* 금테 카드 */
+  .royal-card {
+    @apply rounded-card border border-gold/40 bg-hanji-card shadow-royal;
+  }
+  /* 입력창 */
+  .royal-input {
+    @apply w-full rounded-xl border border-gold/40 bg-white/70 px-4 py-2.5 text-ink placeholder:text-ink-faint
+      transition focus:border-gold focus:outline-none focus:ring-2 focus:ring-gold/30;
+  }
+  .royal-label {
+    @apply mb-1.5 block text-sm font-medium text-ink-soft;
+  }
+  /* 금사 강조선 */
+  .gold-rule {
+    @apply h-px w-full bg-gradient-to-r from-transparent via-gold/70 to-transparent;
+  }
+  /* 운문(구름 무늬) 배경 — 아주 옅게 */
+  .cloud-pattern {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='90' viewBox='0 0 160 90'%3E%3Cg fill='none' stroke='%23C9A227' stroke-opacity='0.13' stroke-width='1.4' stroke-linecap='round'%3E%3Cpath d='M10 60c0-8 7-14 15-14 2-9 10-15 19-15 10 0 18 7 19 17 6 0 11 5 11 11'/%3E%3Cpath d='M34 46c0-5 4-9 9-9s9 4 9 9'/%3E%3Cpath d='M90 25c0-6 5-11 11-11 2-6 8-10 14-10 8 0 14 6 14 14 5 0 9 4 9 9'/%3E%3Cpath d='M108 18c0-4 3-7 7-7s7 3 7 7'/%3E%3C/g%3E%3C/svg%3E");
+  }
+}
