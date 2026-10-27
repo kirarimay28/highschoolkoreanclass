@@ -14,10 +14,12 @@ interface TabBarProps<T extends string> {
   onChange: (id: T) => void;
   className?: string;
   size?: 'sm' | 'md';
+  /** 터치 화면용: 높이 최소 44px */
+  touch?: boolean;
 }
 
 /** 설정 배열을 받아 그리는 탭/필터 바 (모바일에서는 가로 스크롤) */
-export function TabBar<T extends string>({ items, value, onChange, className, size = 'md' }: TabBarProps<T>) {
+export function TabBar<T extends string>({ items, value, onChange, className, size = 'md', touch }: TabBarProps<T>) {
   return (
     <div
       role="tablist"
@@ -38,6 +40,7 @@ export function TabBar<T extends string>({ items, value, onChange, className, si
             className={cn(
               'flex flex-1 shrink-0 items-center justify-center gap-1 sm:gap-1.5 whitespace-nowrap rounded-collar font-medium transition-all',
               size === 'sm' ? 'px-3 py-1.5 text-sm' : 'px-2.5 py-2 text-[15px] sm:px-4',
+              touch && 'min-h-[44px]',
               selected
                 ? 'bg-gradient-to-b from-royal-light to-royal text-hanji shadow-button'
                 : 'text-ink-soft hover:bg-gold/10 hover:text-royal',

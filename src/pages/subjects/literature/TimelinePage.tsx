@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { EmptyState } from '@/components/common/EmptyState';
+import { BottomSheet } from '@/components/common/BottomSheet';
 import { Modal } from '@/components/common/Modal';
 import { RoyalButton } from '@/components/common/RoyalButton';
 import { TabBar } from '@/components/common/TabBar';
@@ -7,7 +8,8 @@ import { MedalPageHeader } from '@/components/layout/MedalPageHeader';
 import { getSubject } from '@/config/subjects';
 import { getEra, influences, standardTexts, timelineMaps, type MapId } from '@/data/literatureTimeline';
 import { useMediaQuery } from '@/utils/useMediaQuery';
-import { TimelineAccordion, TimelineMap, type TimelineSelection } from './TimelineMap';
+import { MobileTimeline } from './MobileTimeline';
+import { TimelineMap, type TimelineSelection } from './TimelineMap';
 
 type TabId = MapId | 'modern';
 
@@ -32,8 +34,8 @@ export function TimelinePage() {
       accent={subject.accent}
     >
       <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
-        <TabBar items={timelineMaps.map((m) => ({ id: m.id, label: m.label }))} value={tab} onChange={setTab} size="sm" className="max-w-xl" />
-        {current.ready && hasArrows && (
+        <TabBar items={timelineMaps.map((m) => ({ id: m.id, label: m.label }))} value={tab} onChange={setTab} size="sm" touch={!wide} className="max-w-xl" />
+        {current.ready && hasArrows && wide && (
           <RoyalButton variant="secondary" size="sm" icon="sparkles" active={showInfluences} onClick={() => setShowInfluences((v) => !v)}>
             영향 관계 보기
           </RoyalButton>
@@ -50,29 +52,45 @@ export function TimelinePage() {
           <TimelineMap map={tab as MapId} showInfluences={showInfluences} onSelect={setSelected} />
         </>
       ) : (
-        <TimelineAccordion map={tab as MapId} showInfluences={showInfluences} onSelect={setSelected} />
+        <MobileTimeline key={tab} map={tab as MapId} onSelect={setSelected} />
       )}
 
-      <DetailCard selection={selected} onClose={() => setSelected(null)} onSelect={setSelected} />
+      <DetailCard selection={selected} onClose={() => setSelected(null)} onSelect={setSelected} mobile={!wide} />
     </MedalPageHeader>
   );
 }
 
-function DetailCard({
+/** PC: 가운데 창 / 모바일: 바텀시트 */
+function DetailShell({ mobile, title, wide, onClose, children }: { mobile: boolean; title: string; wide?: boolean; onClose: () => void; children: React.ReactNode }) {
+  return mobile ? (
+    <BottomSheet open title={title} onClose={onClose}>
+      {children}
+    </BottomSheet>
+  ) : (
+    <Modal open wide={wide} title={title} onClose={onClose}>
+      {children}
+    </Modal>
+  );
+}
+
+export function DetailCard({
   selection,
   onClose,
   onSelect,
+  mobile = false,
 }: {
   selection: TimelineSelection | null;
   onClose: () => void;
   onSelect: (s: TimelineSelection) => void;
+  /** 모바일: 바텀시트 + 표는 항목별 카드로 */
+  mobile?: boolean;
 }) {
   if (!selection) return null;
 
   if (selection.kind === 'era') {
     const era = getEra(selection.era);
     return (
-      <Modal open title={`${era.name}${era.sub ? ` (${era.sub})` : ''} · 사회·문화적 배경`} onClose={onClose}>
+      <DetailShell mobile={mobile} onClose={onClose} title={`${era.name}${era.sub ? ` (${era.sub})` : ''} · 사회·문화적 배경`}>
         <p className="font-serif text-lg font-bold text-royal-deep">{era.background.summary}</p>
         <ul className="mt-3 space-y-1.5 text-[15px]">
           {era.background.points.map((p) => (
@@ -82,24 +100,24 @@ function DetailCard({
             </li>
           ))}
         </ul>
-      </Modal>
+      </DetailShell>
     );
   }
 
   if (selection.kind === 'influence') {
     const inf = selection.influence;
     return (
-      <Modal open title="영향 관계" onClose={onClose}>
+      <DetailShell mobile={mobile} onClose={onClose} title="영향 관계">
         <p className="inline-flex rounded-full bg-gold px-3 py-1 text-sm font-bold text-royal-deep">{inf.label}</p>
         <p className="mt-3 leading-relaxed">{inf.description}</p>
-      </Modal>
+      </DetailShell>
     );
   }
 
   if (selection.kind === 'work') {
     const { work, lane } = selection;
     return (
-      <Modal open title={work.title} onClose={onClose}>
+      <DetailShell mobile={mobile} onClose={onClose} title={work.title}>
         <dl className="grid grid-cols-[5rem_1fr] gap-y-2 text-[15px]">
           <dt className="text-ink-faint">갈래</dt>
           <dd>
@@ -122,14 +140,14 @@ function DetailCard({
             </>
           )}
         </dl>
-      </Modal>
+      </DetailShell>
     );
   }
 
   const { lane } = selection;
   const d = lane.detail;
   return (
-    <Modal open wide title={lane.name} onClose={onClose}>
+    <DetailShell mobile={mobile} onClose={onClose} wide title={lane.name}>
       <div className="space-y-5 text-[15px]">
         <section>
           <h3 className="mb-1 text-sm font-bold text-gold-dark">갈래 정의</h3>
@@ -148,7 +166,28 @@ function DetailCard({
           </ol>
         </section>
 
-        {d.comparison && (
+        {d.comparison && mobile && (
+          <section>
+            <h3 className="mb-1.5 text-sm font-bold text-gold-dark">신화 · 전설 · 민담 비교</h3>
+            <div className="space-y-2">
+              {d.comparison.headers.map((h, ci) => (
+                <div key={h} className="rounded-2xl border border-gold/30 bg-white/60 p-3">
+                  <p className="mb-1.5 font-serif text-lg font-bold text-royal-deep">{h}</p>
+                  <dl className="grid grid-cols-[6.5rem_1fr] gap-x-2 gap-y-1 text-sm">
+                    {d.comparison!.rows.map((r) => (
+                      <div key={r.label} className="contents">
+                        <dt className="text-ink-faint">{r.label}</dt>
+                        <dd>{r.cells[ci]}</dd>
+                      </div>
+                    ))}
+                  </dl>
+                </div>
+              ))}
+            </div>
+          </section>
+        )}
+
+        {d.comparison && !mobile && (
           <section>
             <h3 className="mb-1.5 text-sm font-bold text-gold-dark">신화 · 전설 · 민담 비교</h3>
             <div className="overflow-x-auto rounded-xl border border-gold/30">
@@ -224,6 +263,6 @@ function DetailCard({
           </ul>
         </section>
       </div>
-    </Modal>
+    </DetailShell>
   );
 }

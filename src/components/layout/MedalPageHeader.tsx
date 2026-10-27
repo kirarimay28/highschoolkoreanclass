@@ -40,7 +40,7 @@ export function MedalPageHeader({ backTo, backLabel, icon, title, hanja, descrip
         aria-hidden
       />
 
-      <Link to={backTo} className="mb-4 inline-flex items-center gap-1 text-sm text-ink-soft hover:text-[rgb(var(--page-accent))]">
+      <Link to={backTo} className="-my-3 mb-1 inline-flex min-h-[44px] items-center gap-1 text-sm text-ink-soft hover:text-[rgb(var(--page-accent))]">
         <Icon name="back" size={16} />
         {backLabel}
       </Link>

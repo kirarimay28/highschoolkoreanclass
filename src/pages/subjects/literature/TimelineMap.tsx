@@ -222,7 +222,7 @@ export function WorkMedal({ work, faint, onClick }: { work: Work; faint?: boolea
       whileFocus={reduce ? undefined : { scale: 1.08 }}
       whileTap={reduce ? undefined : { scale: 0.92 }}
       transition={{ type: 'spring', stiffness: 600, damping: 12 }}
-      className="group flex max-w-[84px] flex-col items-center outline-none"
+      className="group flex min-h-[44px] min-w-[44px] max-w-[84px] flex-col items-center outline-none"
       aria-label={`${work.title}${work.author ? ` (${work.author})` : ''}`}
     >
       <span
@@ -269,12 +269,14 @@ function InfluenceArrows({ arrows, show, onSelect }: { arrows: Influence[]; show
     const root = svg?.parentElement;
     if (!svg || !root) return;
     const base = root.getBoundingClientRect();
+    // 확대·축소(전체 지도 보기)된 상태여도 원래 좌표로 계산
+    const k = root.offsetWidth ? base.width / root.offsetWidth : 1;
     setSize({ w: root.scrollWidth, h: root.scrollHeight });
     const center = (key: string) => {
       const el = root.querySelector(`[data-cell="${key}"]`);
       if (!el) return null;
       const r = el.getBoundingClientRect();
-      return { x: r.left - base.left + r.width / 2, y: r.top - base.top + r.height / 2, h: r.height };
+      return { x: (r.left - base.left + r.width / 2) / k, y: (r.top - base.top + r.height / 2) / k, h: r.height / k };
     };
     const next =
       arrows.flatMap((influence) => {
@@ -386,108 +388,5 @@ function InfluenceArrows({ arrows, show, onSelect }: { arrows: Influence[]; show
           ))}
       </AnimatePresence>
     </svg>
-  );
-}
-
-/** 모바일: 레인을 하나씩 접었다 펴는 아코디언 */
-export function TimelineAccordion({ map, showInfluences, onSelect }: MapProps) {
-  const lanes = allLanes.filter((l) => l.map === map);
-  const arrows = influences.filter((i) => i.map === map);
-  const [open, setOpen] = useState<string | null>(lanes[0]?.id ?? null);
-  const eraName = (id: EraId) => eras[eraIndex(id)].name;
-
-  return (
-    <div className="space-y-3">
-      {/* 시대 배경 칩 */}
-      <div className="-mx-4 flex gap-2 overflow-x-auto px-4 pb-1">
-        {eras.map((e) => (
-          <button
-            key={e.id}
-            type="button"
-            onClick={() => onSelect({ kind: 'era', era: e.id })}
-            className="shrink-0 rounded-full border border-gold/40 bg-white/70 px-3 py-1.5 font-serif text-sm font-bold text-royal-deep"
-          >
-            {e.name}
-          </button>
-        ))}
-      </div>
-
-      {showInfluences && (
-        <div className="royal-card space-y-2 p-4">
-          <p className="text-sm font-bold text-gold-dark">영향 관계</p>
-          {arrows.map((a) => (
-            <button
-              key={a.id}
-              type="button"
-              onClick={() => onSelect({ kind: 'influence', influence: a })}
-              className="flex w-full items-center gap-2 rounded-xl bg-gold/10 px-3 py-2 text-left text-sm font-semibold text-royal-deep"
-            >
-              <Icon name="sparkles" size={15} className="shrink-0 text-gold-dark" />
-              {a.label}
-            </button>
-          ))}
-        </div>
-      )}
-
-      {lanes.map((lane) => {
-        const isOpen = open === lane.id;
-        const first = lane.stages[0];
-        const last = lane.stages[lane.stages.length - 1];
-        return (
-          <section key={lane.id} className={cn('royal-card overflow-hidden', lane.foundation && 'opacity-80')} style={laneColor(lane)}>
-            <button
-              type="button"
-              onClick={() => setOpen(isOpen ? null : lane.id)}
-              aria-expanded={isOpen}
-              className="flex w-full items-center gap-3 px-4 py-3.5 text-left"
-            >
-              <span className="h-3 w-3 shrink-0 rounded-full bg-[rgb(var(--lane))]" aria-hidden />
-              <span className="flex-1">
-                <span className="block font-serif text-lg font-bold">{lane.name}</span>
-                <span className="text-xs text-ink-faint">
-                  {first.from === last.to ? eraName(first.from) : `${eraName(first.from)} ~ ${eraName(last.to)}`}
-                </span>
-              </span>
-              <Icon name="back" size={18} className={cn('shrink-0 text-ink-faint transition-transform', isOpen ? 'rotate-90' : '-rotate-90')} />
-            </button>
-            <AnimatePresence initial={false}>
-              {isOpen && (
-                <motion.div
-                  initial={{ height: 0, opacity: 0 }}
-                  animate={{ height: 'auto', opacity: 1 }}
-                  exit={{ height: 0, opacity: 0 }}
-                  transition={{ duration: 0.25 }}
-                  className="overflow-hidden"
-                >
-                  <div className="space-y-3 border-t border-gold/20 px-4 pb-4 pt-3">
-                    <ol className="relative space-y-2 border-l-2 border-[rgb(var(--lane)/0.4)] pl-4">
-                      {lane.stages.map((s) => (
-                        <li key={s.label} className="relative">
-                          <span className="absolute -left-[21px] top-1.5 h-2.5 w-2.5 rounded-full bg-[rgb(var(--lane))]" aria-hidden />
-                          <span className="text-xs text-ink-faint">{s.from === s.to ? eraName(s.from) : `${eraName(s.from)} ~ ${eraName(s.to)}`}</span>
-                          <p className="text-sm font-semibold text-[rgb(var(--lane))]">{s.label}</p>
-                        </li>
-                      ))}
-                    </ol>
-                    <div className="flex flex-wrap gap-3">
-                      {lane.works.map((w) => (
-                        <WorkMedal key={w.title} work={w} onClick={() => onSelect({ kind: 'work', work: w, lane })} />
-                      ))}
-                    </div>
-                    <button
-                      type="button"
-                      onClick={() => onSelect({ kind: 'lane', lane })}
-                      className="text-sm font-semibold text-[rgb(var(--lane))] underline-offset-2 hover:underline"
-                    >
-                      {lane.name} 자세히 보기 ›
-                    </button>
-                  </div>
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </section>
-        );
-      })}
-    </div>
   );
 }
