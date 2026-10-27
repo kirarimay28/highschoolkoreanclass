@@ -10,15 +10,15 @@ export interface LobbyMenuItem {
   /** 아이콘 타일 색: royal | gold | indigo | jade | plum */
   tone: Tone;
   path: string;
-  /** true 면 로비에 큰 카드로도 보임. 모든 항목은 ☰ 메뉴 서랍에 항상 보임 */
+  /** true: 로비에 큰 카드로 보임 / false·생략: ☰ 메뉴 서랍에 보임 */
   showInLobby?: boolean;
   /** 지정하면 해당 역할에게만 보임. 생략하면 모두에게 보임 */
   roles?: Role[];
 }
 
 /**
- * 메뉴 목록 — ☰ 메뉴 서랍에 이 순서대로 보이고,
- * showInLobby: true 인 항목은 로비에 큰 카드로도 보입니다.
+ * 메뉴 목록 — showInLobby: true 인 항목은 로비 카드로,
+ * 나머지는 ☰ 메뉴 서랍에 이 순서대로 보입니다.
  * 새 path 를 추가했다면 src/routes.tsx 에 페이지도 연결해 주세요.
  */
 export const lobbyMenu: LobbyMenuItem[] = [

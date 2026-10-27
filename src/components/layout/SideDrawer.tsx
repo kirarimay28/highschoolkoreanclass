@@ -32,7 +32,8 @@ export function SideDrawer({ open, user, onClose, onLogout }: SideDrawerProps) {
   }, [open, onClose]);
 
   if (!open) return null;
-  const menu = lobbyMenu.filter((m) => !m.roles || m.roles.includes(user.role));
+  // 로비 카드로 나오는 항목은 서랍에서 빼서 중복을 없앰
+  const menu = lobbyMenu.filter((m) => !m.showInLobby && (!m.roles || m.roles.includes(user.role)));
   const roleIcon = loginRoles.find((r) => r.id === user.role)?.icon ?? 'user';
 
   const itemClass = ({ isActive }: { isActive: boolean }) =>
@@ -88,10 +89,6 @@ export function SideDrawer({ open, user, onClose, onLogout }: SideDrawerProps) {
 
         {/* 메뉴 */}
         <nav className="flex-1 space-y-1 overflow-y-auto px-3 py-4">
-          <NavLink to="/lobby" onClick={onClose} className={itemClass}>
-            <IconTile icon="home" tone="gold" size="sm" />
-            로비
-          </NavLink>
           {menu.map((m) => (
             <NavLink key={m.id} to={m.path} onClick={onClose} className={itemClass}>
               <IconTile icon={m.icon} tone={m.tone} size="sm" />
