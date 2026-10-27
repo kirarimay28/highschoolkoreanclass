@@ -6,7 +6,7 @@ const html = readFileSync(path, 'utf8');
 const assets = [...html.matchAll(/<(script|link)[^>]*(?:src|href)="\.\/assets\/[^"]+"[^>]*>(?:<\/script>)?/g)].map((m) => m[0]);
 const out = `<title>국교고등학교 국어 교실</title>
 <meta name="theme-color" content="#8B1A1A">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=Noto+Sans+KR:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=Noto+Serif+KR:wght@900&family=Noto+Sans+KR:wght@400;500;600;700&display=swap">
 ${assets.join('\n')}
 <div id="root"></div>
 `;

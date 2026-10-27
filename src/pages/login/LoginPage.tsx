@@ -39,7 +39,7 @@ export function LoginPage() {
         </span>
         <h1 className="mt-6 flex flex-col items-center">
           <span className="font-serif text-base font-bold tracking-[0.3em] text-gold-dark sm:text-lg">{appConfig.school}</span>
-          <span className="title-gradient mt-1 pb-1 text-5xl font-bold tracking-tight drop-shadow-[0_6px_18px_rgb(var(--color-royal)/0.18)] sm:text-6xl">
+          <span className="title-gradient mt-1 pb-1 font-display text-5xl font-black tracking-tight drop-shadow-[0_6px_18px_rgb(var(--color-royal)/0.18)] sm:text-6xl">
             {appConfig.name}
           </span>
         </h1>
