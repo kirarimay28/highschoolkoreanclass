@@ -1,6 +1,15 @@
 import type { IconName } from '@/components/common/icons';
 import type { Tone } from '@/components/common/IconTile';
 import type { Role } from '@/types';
+import { subjects } from './subjects';
+
+export interface LobbySubItem {
+  id: string;
+  title: string;
+  description?: string;
+  icon: IconName;
+  path: string;
+}
 
 export interface LobbyMenuItem {
   id: string;
@@ -14,6 +23,8 @@ export interface LobbyMenuItem {
   showInLobby?: boolean;
   /** 지정하면 해당 역할에게만 보임. 생략하면 모두에게 보임 */
   roles?: Role[];
+  /** 로비에서 누르면 바로 이동하지 않고, 이 작은 메달들이 주위로 펼쳐짐 */
+  children?: LobbySubItem[];
 }
 
 /**
@@ -30,6 +41,7 @@ export const lobbyMenu: LobbyMenuItem[] = [
     tone: 'royal',
     path: '/subjects',
     showInLobby: true,
+    children: subjects.map((s) => ({ id: s.id, title: s.name, description: s.description, icon: s.icon, path: `/subjects/${s.id}` })),
   },
   {
     id: 'studyroom',
