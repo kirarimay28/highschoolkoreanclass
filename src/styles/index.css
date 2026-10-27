@@ -54,6 +54,22 @@
     background-clip: text;
     color: transparent;
   }
+  /* 금빛이 글자 위를 천천히 훑고 지나가는 반짝임 (그라데이션 제목 위에 덧씌움) */
+  .title-shimmer {
+    background-image:
+      linear-gradient(105deg, transparent 38%, rgb(255 246 214 / 0.95) 48%, rgb(var(--color-gold-light)) 50%, rgb(255 246 214 / 0.95) 52%, transparent 62%),
+      linear-gradient(120deg, rgb(var(--color-royal-deep)) 0%, rgb(var(--color-royal-light)) 45%, rgb(var(--color-gold)) 100%);
+    background-size: 250% 100%, 100% 100%;
+    background-repeat: no-repeat;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    animation: title-shimmer 4.5s ease-in-out infinite;
+  }
+  @keyframes title-shimmer {
+    0% { background-position: 130% 0, 0 0; }
+    55%, 100% { background-position: -30% 0, 0 0; }
+  }
   /* 입력창 */
   .royal-input {
     @apply w-full rounded-2xl border border-white bg-white/75 px-4 py-2.5 text-ink placeholder:text-ink-faint
