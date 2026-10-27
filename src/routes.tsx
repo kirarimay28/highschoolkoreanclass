@@ -1,4 +1,4 @@
-import { Navigate, Route, Routes } from 'react-router-dom';
+import { Navigate, Route, Routes, useParams } from 'react-router-dom';
 import { AppLayout } from '@/components/layout/AppLayout';
 import { ProtectedRoute } from '@/components/layout/ProtectedRoute';
 import { BoardPage } from '@/pages/board/BoardPage';
@@ -10,7 +10,6 @@ import { LoginPage } from '@/pages/login/LoginPage';
 import { StudentManagePage } from '@/pages/students/StudentManagePage';
 import { StudyRoomPage } from '@/pages/studyroom/StudyRoomPage';
 import { SubjectPage } from '@/pages/subjects/SubjectPage';
-import { SubjectSelectPage } from '@/pages/subjects/SubjectSelectPage';
 import { TutorialPage } from '@/pages/tutorial/TutorialPage';
 
 /** URL ↔ 페이지 연결. 로비 메뉴(src/config/lobbyMenu.ts)의 path 와 맞춰 주세요. */
@@ -21,8 +20,10 @@ export function AppRoutes() {
       <Route element={<ProtectedRoute />}>
         <Route element={<AppLayout />}>
           <Route path="/lobby" element={<LobbyPage />} />
-          <Route path="/subjects" element={<SubjectSelectPage />} />
-          <Route path="/subjects/:subjectId" element={<SubjectPage />} />
+          <Route path="/subject/:subjectId" element={<SubjectPage />} />
+          {/* 예전 주소 호환 */}
+          <Route path="/subjects" element={<Navigate to="/lobby?expand=subjects" replace />} />
+          <Route path="/subjects/:subjectId" element={<LegacySubjectRedirect />} />
           <Route path="/studyroom" element={<StudyRoomPage />} />
           <Route path="/board" element={<BoardPage />} />
           <Route path="/board/:postId" element={<BoardPostPage />} />
@@ -35,4 +36,9 @@ export function AppRoutes() {
       <Route path="*" element={<Navigate to="/lobby" replace />} />
     </Routes>
   );
+}
+
+function LegacySubjectRedirect() {
+  const { subjectId } = useParams();
+  return <Navigate to={`/subject/${subjectId}`} replace />;
 }

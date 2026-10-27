@@ -1,7 +1,7 @@
 import type { IconName } from '@/components/common/icons';
 import type { Tone } from '@/components/common/IconTile';
 import type { Role } from '@/types';
-import { subjects } from './subjects';
+import { subjectMedalLayoutId, subjectPath, subjects, type SubjectAccent } from './subjects';
 
 export interface LobbySubItem {
   id: string;
@@ -9,6 +9,10 @@ export interface LobbySubItem {
   description?: string;
   icon: IconName;
   path: string;
+  /** 과목 색 변주 */
+  colors?: SubjectAccent;
+  /** 다음 화면 메달로 이어지는 전환용 */
+  layoutId?: string;
 }
 
 export interface LobbyMenuItem {
@@ -41,7 +45,15 @@ export const lobbyMenu: LobbyMenuItem[] = [
     tone: 'royal',
     path: '/subjects',
     showInLobby: true,
-    children: subjects.map((s) => ({ id: s.id, title: s.name, description: s.description, icon: s.icon, path: `/subjects/${s.id}` })),
+    children: subjects.map((s) => ({
+      id: s.id,
+      title: s.name,
+      description: s.description,
+      icon: s.icon,
+      path: subjectPath(s.id),
+      colors: s.accent,
+      layoutId: subjectMedalLayoutId(s.id),
+    })),
   },
   {
     id: 'studyroom',

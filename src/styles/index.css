@@ -76,7 +76,7 @@
   /* 흉배 원형 메달 (MedallionButton) */
   .medallion {
     background:
-      radial-gradient(circle at 50% 38%, rgb(var(--color-hanji-card)) 0%, rgb(var(--color-hanji)) 55%, rgb(var(--color-royal-light) / 0.16) 100%);
+      radial-gradient(circle at 50% 38%, rgb(var(--color-hanji-card)) 0%, rgb(var(--color-hanji)) 55%, rgb(var(--medal-tint) / 0.18) 100%);
     box-shadow:
       0 12px 30px -14px rgb(var(--color-royal-deep) / 0.45),
       inset 0 2px 6px rgb(255 255 255 / 0.7),

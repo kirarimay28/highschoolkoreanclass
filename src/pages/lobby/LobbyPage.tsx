@@ -1,6 +1,6 @@
 import { motion, useAnimationControls, useReducedMotion } from 'framer-motion';
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { MedallionButton, type MedallionState } from '@/components/common/MedallionButton';
 import { CloudDivider } from '@/components/motifs/CloudDivider';
 import { lobbyMenu, type LobbySubItem } from '@/config/lobbyMenu';
@@ -58,6 +58,19 @@ export function LobbyPage() {
     go(child.path);
   };
 
+  // 과목 페이지의 "‹ 과목 선택"으로 돌아오면 (?expand=subjects) 하위 메뉴를 펼친 채로 시작
+  const [params] = useSearchParams();
+  const expandParam = params.get('expand');
+  useLayoutEffect(() => {
+    if (!expandParam) return;
+    const item = items.find((m) => m.id === expandParam && m.children?.length);
+    if (!item) return;
+    const r = medalRefs.current[item.id]?.getBoundingClientRect();
+    setOrigin(r ? { x: r.left + r.width / 2, y: r.top + r.height / 2 } : null);
+    setSelectedId(item.id);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [expandParam]);
+
   // 하위 메뉴가 펼쳐지면 키보드 사용자를 위해 첫 번째로 포커스 이동
   useEffect(() => {
     if (selectedId && expandedChildren) firstChildRef.current?.focus({ preventScroll: true });
@@ -112,6 +125,8 @@ export function LobbyPage() {
                 description={child.description}
                 index={i}
                 state={!selectedChild ? 'idle' : selectedChild === child.id ? 'selected' : 'dimmed'}
+                colors={child.colors}
+                layoutId={child.layoutId}
                 onSelect={() => selectChild(child)}
                 ref={i === 0 ? firstChildRef : undefined}
               />

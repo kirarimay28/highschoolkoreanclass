@@ -1,5 +1,5 @@
 import { AnimatePresence, motion, useReducedMotion, type Variants } from 'framer-motion';
-import { forwardRef, useState } from 'react';
+import { forwardRef, useState, type CSSProperties } from 'react';
 import { cn } from '@/utils/format';
 import { iconRegistry, type IconName } from './icons';
 
@@ -14,7 +14,14 @@ import { iconRegistry, type IconName } from './icons';
  */
 
 export type MedallionState = 'idle' | 'selected' | 'dimmed';
-export type MedallionSize = 'lg' | 'sm';
+export type MedallionSize = 'lg' | 'md' | 'sm';
+
+/** 메달 색 변주 ("R G B"). 생략하면 기본 홍·금 */
+export interface MedallionColors {
+  accent: string; // 아이콘 색
+  gold: string; // 금테
+  tint: string; // 바탕에 번지는 색
+}
 
 export interface MedallionButtonProps {
   icon: IconName;
@@ -31,6 +38,13 @@ export interface MedallionButtonProps {
   expanded?: boolean;
   onSelect?: () => void;
   className?: string;
+  /** 다른 화면의 같은 layoutId 메달로 이어지는 전환 (framer-motion) */
+  layoutId?: string;
+  colors?: MedallionColors;
+  /** false 면 누를 수 없는 장식용 메달 (페이지 헤더 등) */
+  interactive?: boolean;
+  /** 이름·설명을 원 아래에 표시할지 (기본 true) */
+  showLabel?: boolean;
 }
 
 const sizes: Record<MedallionSize, { circle: string; icon: string; label: string }> = {
@@ -38,6 +52,11 @@ const sizes: Record<MedallionSize, { circle: string; icon: string; label: string
     circle: 'h-[120px] w-[120px] sm:h-[190px] sm:w-[190px]',
     icon: 'h-11 w-11 sm:h-[68px] sm:w-[68px]',
     label: 'mt-3 text-lg sm:mt-4 sm:text-2xl',
+  },
+  md: {
+    circle: 'h-[96px] w-[96px] sm:h-[132px] sm:w-[132px]',
+    icon: 'h-10 w-10 sm:h-14 sm:w-14',
+    label: 'mt-2 text-lg sm:text-xl',
   },
   sm: {
     circle: 'h-[84px] w-[84px] sm:h-[112px] sm:w-[112px]',
@@ -50,7 +69,22 @@ const sizes: Record<MedallionSize, { circle: string; icon: string; label: string
 const bouncy = { type: 'spring', stiffness: 520, damping: 13, mass: 0.8 } as const;
 
 export const MedallionButton = forwardRef<HTMLButtonElement, MedallionButtonProps>(function MedallionButton(
-  { icon, label, description, size = 'lg', state = 'idle', index = 0, entrance = true, expanded, onSelect, className },
+  {
+    icon,
+    label,
+    description,
+    size = 'lg',
+    state = 'idle',
+    index = 0,
+    entrance = true,
+    expanded,
+    onSelect,
+    className,
+    layoutId,
+    colors,
+    interactive = true,
+    showLabel = true,
+  },
   ref,
 ) {
   const reduce = useReducedMotion() ?? false;
@@ -65,9 +99,19 @@ export const MedallionButton = forwardRef<HTMLButtonElement, MedallionButtonProp
     dimmed: { opacity: 0.4, y: 0, scale: 0.9, filter: 'saturate(0.6)' },
   };
 
+  const colorVars = colors
+    ? ({ '--medal-ink': colors.accent, '--medal-gold': colors.gold, '--medal-tint': colors.tint } as CSSProperties)
+    : undefined;
+  const motionOn = interactive && !reduce && state === 'idle';
+  const widths: Record<MedallionSize, string> = {
+    lg: 'w-[140px] sm:w-[220px]',
+    md: 'w-[110px] sm:w-[150px]',
+    sm: 'w-[104px] sm:w-[140px]',
+  };
+
   return (
     <motion.div
-      className={cn('flex w-[140px] flex-col items-center sm:w-[220px]', size === 'sm' && 'w-[104px] sm:w-[140px]', className)}
+      className={cn('flex flex-col items-center', showLabel ? widths[size] : 'w-auto', className)}
       variants={stateVariants}
       initial={entrance ? 'hidden' : false}
       animate={state}
@@ -76,20 +120,21 @@ export const MedallionButton = forwardRef<HTMLButtonElement, MedallionButtonProp
           ? { duration: 0.2 }
           : { ...bouncy, delay: entrance && state === 'idle' ? index * 0.08 : 0, opacity: { duration: 0.25, delay: entrance ? index * 0.08 : 0 } }
       }
-      style={{ zIndex: state === 'selected' ? 2 : 1 }}
+      style={{ zIndex: state === 'selected' ? 2 : 1, ...colorVars }}
     >
       {/* 대기 중 둥실둥실 — 선택 연출 중에는 멈춤 */}
       <motion.div
-        animate={!reduce && state === 'idle' ? { y: [0, -6, 0] } : { y: 0 }}
+        animate={motionOn ? { y: [0, -6, 0] } : { y: 0 }}
         transition={
-          !reduce && state === 'idle'
+          motionOn
             ? { duration: 3.2 + (index % 3) * 0.45, repeat: Infinity, ease: 'easeInOut', delay: 0.6 + index * 0.37 }
             : { duration: 0.2 }
         }
       >
-        <motion.button
+        <MedalShell
           ref={ref}
-          type="button"
+          interactive={interactive}
+          layoutId={layoutId}
           aria-label={description ? `${label} — ${description}` : label}
           aria-expanded={expanded}
           onClick={onSelect}
@@ -97,21 +142,21 @@ export const MedallionButton = forwardRef<HTMLButtonElement, MedallionButtonProp
           onHoverEnd={() => setActive(false)}
           onFocus={() => setActive(true)}
           onBlur={() => setActive(false)}
-          whileHover={reduce || state !== 'idle' ? undefined : { scale: 1.08 }}
-          whileFocus={reduce || state !== 'idle' ? undefined : { scale: 1.08 }}
-          whileTap={reduce ? undefined : { scale: 0.92 }}
-          transition={{ type: 'spring', stiffness: 600, damping: 11 }}
+          whileHover={motionOn ? { scale: 1.08 } : undefined}
+          whileFocus={motionOn ? { scale: 1.08 } : undefined}
+          whileTap={interactive && !reduce ? { scale: 0.92 } : undefined}
+          transition={{ type: 'spring', stiffness: 600, damping: 11, layout: { type: 'spring', stiffness: 260, damping: 26 } }}
           className={cn(
-            'medallion group relative flex items-center justify-center rounded-full text-royal outline-none',
+            'medallion group relative flex shrink-0 items-center justify-center rounded-full text-[rgb(var(--medal-ink))] outline-none',
             s.circle,
-            active && 'medallion-glow',
+            interactive && active && 'medallion-glow',
             state === 'selected' && 'medallion-glow',
           )}
         >
           {/* 금테 두 겹 + 금사 바느질 */}
-          <span className="pointer-events-none absolute inset-0 rounded-full border-2 border-gold" aria-hidden />
-          <span className="pointer-events-none absolute inset-[5px] rounded-full border border-gold/70 sm:inset-[7px]" aria-hidden />
-          <span className="pointer-events-none absolute inset-[11px] rounded-full border border-dashed border-gold/30 sm:inset-[15px]" aria-hidden />
+          <span className="pointer-events-none absolute inset-0 rounded-full border-2 border-[rgb(var(--medal-gold))]" aria-hidden />
+          <span className="pointer-events-none absolute inset-[5px] rounded-full border border-[rgb(var(--medal-gold)/0.7)] sm:inset-[7px]" aria-hidden />
+          <span className="pointer-events-none absolute inset-[11px] rounded-full border border-dashed border-[rgb(var(--medal-gold)/0.3)] sm:inset-[15px]" aria-hidden />
 
           {/* 선택: 금테 위로 빛이 한 바퀴 + 바깥으로 금빛 파동 */}
           <AnimatePresence>
@@ -128,7 +173,7 @@ export const MedallionButton = forwardRef<HTMLButtonElement, MedallionButtonProp
                 {!reduce && (
                   <motion.span
                     key="ripple"
-                    className="pointer-events-none absolute inset-0 rounded-full border-2 border-gold"
+                    className="pointer-events-none absolute inset-0 rounded-full border-2 border-[rgb(var(--medal-gold))]"
                     initial={{ scale: 1, opacity: 0.7 }}
                     animate={{ scale: 1.65, opacity: 0 }}
                     transition={{ duration: 0.6, ease: 'easeOut' }}
@@ -140,13 +185,13 @@ export const MedallionButton = forwardRef<HTMLButtonElement, MedallionButtonProp
           </AnimatePresence>
 
           <IconComponent className={cn('relative', s.icon)} strokeWidth={1.5} aria-hidden />
-        </motion.button>
+        </MedalShell>
       </motion.div>
 
-      <p className={cn('text-center font-serif font-bold text-royal-deep', s.label)}>{label}</p>
+      {showLabel && <p className={cn('text-center font-serif font-bold text-royal-deep', s.label)}>{label}</p>}
 
       {/* 설명은 호버·포커스 때만 */}
-      <div className="relative h-10 w-full sm:h-11">
+      {showLabel && <div className="relative h-10 w-full sm:h-11">
         <AnimatePresence>
           {description && active && state === 'idle' && (
             <motion.p
@@ -161,7 +206,26 @@ export const MedallionButton = forwardRef<HTMLButtonElement, MedallionButtonProp
             </motion.p>
           )}
         </AnimatePresence>
-      </div>
+      </div>}
+    </motion.div>
+  );
+});
+
+type ShellProps = React.ComponentProps<typeof motion.button> & { interactive: boolean };
+
+/** 누를 수 있으면 button, 장식용이면 div (같은 모양·같은 layoutId 전환) */
+const MedalShell = forwardRef<HTMLButtonElement, ShellProps>(function MedalShell({ interactive, children, ...rest }, ref) {
+  if (interactive) {
+    return (
+      <motion.button ref={ref} type="button" {...rest}>
+        {children}
+      </motion.button>
+    );
+  }
+  const { onClick: _c, onFocus: _f, onBlur: _b, whileFocus: _wf, whileTap: _wt, whileHover: _wh, 'aria-expanded': _e, ...divProps } = rest;
+  return (
+    <motion.div {...(divProps as React.ComponentProps<typeof motion.div>)} role="img">
+      {children}
     </motion.div>
   );
 });

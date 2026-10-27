@@ -1,3 +1,4 @@
+import { LayoutGroup } from 'framer-motion';
 import { useCallback, useEffect, useState } from 'react';
 import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { Avatar } from '@/components/common/Avatar';
@@ -68,7 +69,10 @@ export function AppLayout() {
       </header>
 
       <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-6 sm:py-8">
-        <Outlet />
+        {/* 화면이 바뀌어도 같은 layoutId 메달이 이어지도록 */}
+        <LayoutGroup>
+          <Outlet />
+        </LayoutGroup>
       </main>
 
       <footer className="py-6 text-center text-xs text-ink-faint">{appConfig.footer}</footer>

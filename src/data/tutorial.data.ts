@@ -21,7 +21,7 @@ export const tutorialSteps: TutorialStep[] = [
     title: '과목 선택',
     body: '문학, 독서와 작문, 화법과 언어 중 하나를 골라 수업 내용을 확인하세요.',
     icon: 'book',
-    tip: '과목 페이지 위쪽 탭으로 다른 과목으로 바로 넘어갈 수 있어요.',
+    tip: '다른 과목으로 가려면 과목 페이지 왼쪽 위의 "‹ 과목 선택"을 누르세요.',
   },
   {
     id: 'studyroom',

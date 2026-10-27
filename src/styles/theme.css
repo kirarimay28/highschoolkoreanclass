@@ -39,6 +39,11 @@
   --glass-alpha: 0.62;            /* 카드 불투명도 (0~1) */
   --glass-blur: 18px;             /* 뒤 배경 흐림 정도 */
 
+  /* 원형 메달 기본 색 (과목별로 덮어씀) */
+  --medal-ink: var(--color-royal);
+  --medal-gold: var(--color-gold);
+  --medal-tint: var(--color-royal-light);
+
   /* 폰트 */
   --font-serif: 'Gowun Batang', 'Nanum Myeongjo', serif;
   /* 큰 제목용 (아주 굵은 명조 — 그라데이션·반짝임이 잘 보이도록) */
