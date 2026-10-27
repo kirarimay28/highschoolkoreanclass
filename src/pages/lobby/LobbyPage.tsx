@@ -3,10 +3,9 @@ import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { MedallionButton, type MedallionState } from '@/components/common/MedallionButton';
 import { CloudDivider } from '@/components/motifs/CloudDivider';
-import { can } from '@/config/permissions';
-import { listPending } from '@/services/messageService';
+import { countUnread } from '@/services/messageService';
+import { onNotificationsChanged } from '@/services/notifications';
 import { useAsyncData } from '@/utils/useAsyncData';
-import { TeacherMessageBanner } from './TeacherMessageBanner';
 import { lobbyMenu, type LobbySubItem } from '@/config/lobbyMenu';
 import { roleLabels, withHonorific } from '@/config/roles';
 import { useCurrentUser } from '@/context/AuthContext';
@@ -20,8 +19,9 @@ export function LobbyPage() {
   const reduce = useReducedMotion() ?? false;
   const items = lobbyMenu.filter((m) => m.showInLobby && (!m.roles || m.roles.includes(user.role)));
 
-  const isTeacher = can(user.role, 'receiveMessages');
-  const { data: pending, loading: pendingLoading } = useAsyncData(() => (isTeacher ? listPending(user) : Promise.resolve([])), [user.id], []);
+  // 안 읽은 쪽지 수 (메달 배지)
+  const { data: unread, reload: reloadUnread } = useAsyncData(() => countUnread(user).catch(() => 0), [user.id], 0);
+  useEffect(() => onNotificationsChanged(reloadUnread), [reloadUnread]);
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [selectedChild, setSelectedChild] = useState<string | null>(null);
   const [origin, setOrigin] = useState<{ x: number; y: number } | null>(null);
@@ -102,7 +102,6 @@ export function LobbyPage() {
         <CloudDivider className="mx-auto mt-4 max-w-md" />
       </section>
 
-      {isTeacher && <TeacherMessageBanner pending={pending} loading={pendingLoading} />}
 
       <nav aria-label="로비 메뉴" className="flex flex-wrap items-start justify-center gap-x-4 gap-y-2 sm:gap-x-12" onClick={(e) => e.target === e.currentTarget && collapse()}>
         {items.map((item, i) => (
@@ -116,7 +115,7 @@ export function LobbyPage() {
             state={stateOf(item.id)}
             expanded={item.children ? selectedId === item.id : undefined}
             onSelect={() => selectItem(item.id)}
-            badge={item.id === 'messages' && isTeacher ? pending.length : undefined}
+            badge={item.id === 'messages' ? unread : undefined}
           />
         ))}
       </nav>

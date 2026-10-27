@@ -1,120 +1,66 @@
-import type { Message, MessageAttachment, MessageCategory, MessageRecipient, MessageReply, MessageStatus, Role, User } from '@/types';
-import { db, friendlyError, toMillis, unwrap } from '../supabase';
+import type { Message, MessageContact, User } from '@/types';
+import { db, toMillis, unwrap } from '../supabase';
 
-const BUCKET = 'message-files';
-
-interface ReplyRow {
+interface Row {
   id: string;
-  author_id: string;
-  author_name: string;
-  author_role: Role;
-  body: string;
-  created_at: string;
-}
-interface MessageRow {
-  id: string;
-  sender_student_id: string;
+  sender_id: string;
   sender_name: string;
-  recipient_id: string; // 함수 결과는 'teacher:uuid', 표 직접 조회는 uuid
-  recipient_name?: string;
-  category: MessageCategory;
-  title: string;
-  body: string;
-  attachment: MessageAttachment | null;
-  status: MessageStatus;
+  receiver_id: string;
+  receiver_name: string;
+  content: string;
   created_at: string;
-  replies?: ReplyRow[];
-  message_replies?: ReplyRow[];
+  read: boolean;
 }
-
-const toReply = (r: ReplyRow): MessageReply => ({
+const toMessage = (r: Row): Message => ({
   id: r.id,
-  authorId: r.author_id,
-  authorName: r.author_name,
-  authorRole: r.author_role,
-  body: r.body,
+  senderId: r.sender_id,
+  senderName: r.sender_name,
+  receiverId: r.receiver_id,
+  receiverName: r.receiver_name,
+  content: r.content,
   createdAt: toMillis(r.created_at),
+  read: r.read,
 });
 
-function toMessage(r: MessageRow, recipientName?: string): Message {
-  const replies = (r.replies ?? r.message_replies ?? []).map(toReply).sort((a, b) => a.createdAt - b.createdAt);
-  return {
-    id: r.id,
-    senderId: `student:${r.sender_student_id}`,
-    senderName: r.sender_name,
-    recipientId: r.recipient_id.startsWith('teacher:') ? r.recipient_id : `teacher:${r.recipient_id}`,
-    recipientName: `${r.recipient_name ?? recipientName ?? ''} 선생님`,
-    category: r.category,
-    title: r.title,
-    body: r.body,
-    attachment: r.attachment ?? undefined,
-    status: r.status,
-    createdAt: toMillis(r.created_at),
-    replies,
-  };
+const sid = (user: User) => user.id.replace(/^student:/, '');
+const isStudent = (user: User) => user.role === 'student';
+
+export async function listContacts(user: User): Promise<MessageContact[]> {
+  const teachers = (unwrap(await db().rpc('list_teachers')) as { id: string; name: string }[]).map((t) => ({ ...t, role: 'teacher' as const }));
+  if (isStudent(user)) return teachers;
+  const students = unwrap(await db().from('students').select('student_id, name').order('student_id')) as { student_id: string; name: string }[];
+  return [...students.map((s) => ({ id: `student:${s.student_id}`, name: s.name, role: 'student' as const })), ...teachers.filter((t) => t.id !== user.id)];
 }
 
-const studentId = (user: User) => user.id.replace(/^student:/, '');
-const teacherUuid = (user: User) => user.id.replace(/^teacher:/, '');
-
-export async function listRecipients(): Promise<MessageRecipient[]> {
-  const rows = unwrap(await db().rpc('list_teachers')) as MessageRecipient[];
-  return rows.map((r) => ({ ...r, name: `${r.name} 선생님` }));
+export async function listMessages(user: User): Promise<Message[]> {
+  if (isStudent(user)) {
+    return (unwrap(await db().rpc('student_dm_list', { p_student_id: sid(user), p_name: user.name })) as Row[]).map(toMessage);
+  }
+  return (unwrap(await db().from('direct_messages').select('*').order('created_at')) as Row[]).map(toMessage);
 }
 
-export async function uploadAttachment(file: File): Promise<MessageAttachment> {
-  const ext = file.name.split('.').pop()?.toLowerCase() ?? '';
-  const path = `${new Date().toISOString().slice(0, 7)}/${crypto.randomUUID()}${ext ? `.${ext}` : ''}`;
-  const up = await db().storage.from(BUCKET).upload(path, file, { contentType: file.type || undefined });
-  if (up.error) throw new Error(friendlyError(up.error));
-  return { name: file.name, size: file.size, type: file.type, path };
-}
-
-export async function sendMessage(
-  user: User,
-  input: { recipientId: string; category: MessageCategory; title: string; body: string; attachment?: MessageAttachment },
-): Promise<void> {
+export async function send(user: User, to: MessageContact, content: string): Promise<void> {
+  if (isStudent(user)) {
+    unwrap(await db().rpc('student_dm_send', { p_student_id: sid(user), p_name: user.name, p_receiver: to.id, p_content: content }));
+    return;
+  }
   unwrap(
-    await db().rpc('student_send_message', {
-      p_student_id: studentId(user),
-      p_name: user.name,
-      p_recipient: input.recipientId,
-      p_category: input.category,
-      p_title: input.title,
-      p_body: input.body,
-      p_attachment: input.attachment ?? null,
-    }),
+    await db().from('direct_messages').insert({ sender_id: user.id, sender_name: user.name, receiver_id: to.id, receiver_name: to.name, content }),
   );
 }
 
-export async function listMyMessages(user: User): Promise<Message[]> {
-  const rows = unwrap(await db().rpc('student_list_messages', { p_student_id: studentId(user), p_name: user.name })) as MessageRow[];
-  return rows.map((r) => toMessage(r));
+export async function markRead(user: User, partnerId: string): Promise<void> {
+  if (isStudent(user)) {
+    unwrap(await db().rpc('student_dm_mark_read', { p_student_id: sid(user), p_name: user.name, p_partner: partnerId }));
+    return;
+  }
+  unwrap(await db().from('direct_messages').update({ read: true }).eq('receiver_id', user.id).eq('sender_id', partnerId).eq('read', false));
 }
 
-export async function listInbox(user: User): Promise<Message[]> {
-  const rows = unwrap(
-    await db().from('messages').select('*, message_replies(*)').eq('recipient_id', teacherUuid(user)).order('created_at', { ascending: false }),
-  ) as MessageRow[];
-  return rows.map((r) => toMessage(r, user.name));
-}
-
-export async function setStatus(id: string, status: MessageStatus): Promise<void> {
-  unwrap(await db().from('messages').update({ status }).eq('id', id));
-}
-
-export async function teacherReply(user: User, id: string, body: string): Promise<void> {
-  unwrap(await db().from('message_replies').insert({ message_id: id, author_id: user.id, author_name: user.name, author_role: 'teacher', body }));
-  await setStatus(id, 'replied');
-}
-
-export async function studentReply(user: User, id: string, body: string): Promise<void> {
-  unwrap(await db().rpc('student_reply', { p_student_id: studentId(user), p_name: user.name, p_message_id: id, p_body: body }));
-}
-
-/** 선생님만: 첨부 파일 임시 내려받기 주소 (10분) */
-export async function attachmentUrl(attachment: MessageAttachment): Promise<string | null> {
-  if (!attachment.path) return null;
-  const { data } = await db().storage.from(BUCKET).createSignedUrl(attachment.path, 600, { download: attachment.name });
-  return data?.signedUrl ?? null;
+export async function remove(user: User, id: string): Promise<void> {
+  if (isStudent(user)) {
+    unwrap(await db().rpc('student_dm_delete', { p_student_id: sid(user), p_name: user.name, p_id: id }));
+    return;
+  }
+  unwrap(await db().from('direct_messages').delete().eq('id', id));
 }

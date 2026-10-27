@@ -84,49 +84,23 @@ export interface LibraryFile {
   storagePath?: string;
 }
 
-// ── 선생님께 쪽지 ──
-export type MessageCategory = 'class' | 'assignment' | 'counsel' | 'etc';
-/** sent: 보냄(새 쪽지) → read: 읽음 → replied: 답장 완료 / done: 답장 없이 처리 완료 */
-export type MessageStatus = 'sent' | 'read' | 'replied' | 'done';
-
-export interface MessageAttachment {
-  name: string;
-  size: number;
-  type: string;
-  /** 로컬 저장 시 파일 내용 */
-  dataUrl?: string;
-  /** Supabase Storage 경로 */
-  path?: string;
-}
-
-export interface MessageReply {
-  id: string;
-  authorId: string;
-  authorName: string;
-  authorRole: Role;
-  body: string;
-  createdAt: number;
-}
-
+// ── 선생님께 쪽지 (KoreanEdu 쪽지와 같은 구조) ──
 export interface Message {
   id: string;
-  senderId: string; // 발신 학생 (student:학번)
+  senderId: string;
   senderName: string;
-  senderMeta?: string; // 2학년 3반 1번
-  recipientId: string; // 수신 교사 (teacher:…)
-  recipientName: string;
-  category: MessageCategory;
-  title: string;
-  body: string;
-  attachment?: MessageAttachment;
-  status: MessageStatus;
+  receiverId: string;
+  receiverName: string;
+  content: string;
   createdAt: number;
-  replies: MessageReply[];
+  read: boolean;
 }
 
-export interface MessageRecipient {
-  id: string;
+/** 쪽지를 보낼 수 있는 상대 */
+export interface MessageContact {
+  id: string; // student:학번 / teacher:… / professor:…
   name: string;
+  role: Role;
 }
 
 // ── 고쳐주세요 ──

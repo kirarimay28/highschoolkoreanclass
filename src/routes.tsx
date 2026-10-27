@@ -6,8 +6,7 @@ import { BoardPostPage } from '@/pages/board/BoardPostPage';
 import { FeedbackPage } from '@/pages/feedback/FeedbackPage';
 import { LibraryPage } from '@/pages/library/LibraryPage';
 import { LobbyPage } from '@/pages/lobby/LobbyPage';
-import { MessageDetailPage } from '@/pages/messages/MessageDetailPage';
-import { MessagesPage } from '@/pages/messages/MessagesPage';
+import { ChatPage, ComposePage, MessagesPage } from '@/pages/messages/MessagesPage';
 import { LoginPage } from '@/pages/login/LoginPage';
 import { StudentManagePage } from '@/pages/students/StudentManagePage';
 import { StudyRoomPage } from '@/pages/studyroom/StudyRoomPage';
@@ -34,7 +33,8 @@ export function AppRoutes() {
           <Route path="/board/:postId" element={<BoardPostPage />} />
           <Route path="/library" element={<LibraryPage />} />
           <Route path="/messages" element={<MessagesPage />} />
-          <Route path="/messages/:messageId" element={<MessageDetailPage />} />
+          <Route path="/messages/new" element={<ComposePage />} />
+          <Route path="/messages/:partnerId" element={<ChatPage />} />
           <Route path="/students" element={<StudentManagePage />} />
           <Route path="/tutorial" element={<TutorialPage />} />
           <Route path="/feedback" element={<FeedbackPage />} />

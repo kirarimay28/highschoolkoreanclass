@@ -77,7 +77,7 @@ export const lobbyMenu: LobbyMenuItem[] = [
   {
     id: 'messages',
     title: '선생님께 쪽지',
-    description: '시간 걱정 없이 부담 없이 선생님께 연락해요',
+    description: '선생님과 쪽지를 주고받아요',
     icon: 'mail',
     tone: 'plum',
     path: '/messages',
