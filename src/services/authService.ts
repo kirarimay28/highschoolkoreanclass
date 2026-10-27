@@ -1,10 +1,11 @@
 import { professorAccount } from '@/config/professorQuiz';
 import { teachersMock } from '@/data/teachers.mock';
 import type { User } from '@/types';
-import { isRemoteBackend } from '@/config/backend';
+import { isRemoteBackend, isSandbox, setSandbox } from '@/config/backend';
 import * as remote from './remote/authRemote';
 import { describeStudentId, findStudent } from './rosterService';
-import { STORAGE_KEYS, readJSON, removeKey, writeJSON } from './storage';
+import { ensureSeedData } from './seedService';
+import { STORAGE_KEYS, clearSandbox, readJSON, removeKey, writeJSON } from './storage';
 
 /**
  * 인증 서비스 (mock)
@@ -49,8 +50,11 @@ export async function loginTeacher(staffId: string, password: string): Promise<U
   return saveSession({ id: `teacher:${teacher.staffId}`, name: teacher.name, role: 'teacher' });
 }
 
-/** 교수자 퀴즈를 모두 통과했을 때 호출 */
+/** 교수자 퀴즈를 모두 통과했을 때 호출 — 체험 모드 시작 (샘플 데이터, 이 탭에서만 유지) */
 export async function loginProfessor(): Promise<User> {
+  clearSandbox();
+  setSandbox(true);
+  ensureSeedData();
   return saveSession({ id: `professor:${professorAccount.id}`, name: professorAccount.name, role: 'professor' });
 }
 
@@ -60,6 +64,12 @@ export function getSessionUser(): User | null {
 
 export async function logout(): Promise<void> {
   removeKey(STORAGE_KEYS.session);
+  // 교수자 체험 모드에서 만든 내용은 모두 지움
+  if (isSandbox) {
+    clearSandbox();
+    setSandbox(false);
+    return;
+  }
   if (isRemoteBackend) await remote.signOut().catch(() => undefined);
 }
 

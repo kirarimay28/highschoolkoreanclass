@@ -1,5 +1,4 @@
 import { isRemoteBackend } from '@/config/backend';
-import { professorAccount } from '@/config/professorQuiz';
 import { teachersMock } from '@/data/teachers.mock';
 import type { Message, MessageContact, User } from '@/types';
 import { notifyChanged } from './notifications';
@@ -23,12 +22,11 @@ export interface Conversation {
   unreadCount: number;
 }
 
-/** 쪽지를 보낼 수 있는 상대. 학생 → 선생님만 / 선생님·교수자 → 학생과 다른 선생님 */
+/** 쪽지를 보낼 수 있는 상대. 학생 → 선생님만 / 선생님 → 학생과 다른 선생님 */
 export async function listContacts(user: User): Promise<MessageContact[]> {
   if (isRemoteBackend) return remote.listContacts(user);
   const staff: MessageContact[] = [
     ...teachersMock.map((t) => ({ id: `teacher:${t.staffId}`, name: t.name, role: 'teacher' as const })),
-    { id: `professor:${professorAccount.id}`, name: professorAccount.name, role: 'professor' },
   ];
   if (user.role === 'student') return staff;
   const students = (await listStudents()).map((s) => ({ id: `student:${s.studentId}`, name: s.name, role: 'student' as const }));

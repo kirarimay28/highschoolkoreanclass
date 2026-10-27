@@ -89,7 +89,7 @@ export function DiyStructurePage() {
       </div>
 
       <div className="mb-4 flex flex-wrap items-center gap-3">
-        <TabBar items={tabs} value={tab} onChange={setTab} size="sm" className="max-w-2xl" />
+        <TabBar items={tabs} value={tab} onChange={setTab} noteScope="reading-writing:diy" size="sm" className="max-w-2xl" />
         {passages.length > 1 && (
           <select className="royal-input w-auto py-2 text-sm" value={passage?.id} onChange={(e) => setPassageId(e.target.value)} aria-label="지문 고르기">
             {passages.map((p) => (

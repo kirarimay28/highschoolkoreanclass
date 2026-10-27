@@ -1,5 +1,5 @@
 import { createClient, type SupabaseClient } from '@supabase/supabase-js';
-import { backendConfig, isRemoteBackend } from '@/config/backend';
+import { backendConfig, isBackendConfigured } from '@/config/backend';
 
 /**
  * 선생님 초대 메일·비밀번호 재설정 메일의 링크로 들어왔는지.
@@ -12,7 +12,7 @@ export const passwordSetupType: 'invite' | 'recovery' | null = (() => {
 })();
 
 /** Supabase 연결 (설정이 없으면 null → 각 서비스가 localStorage 로 동작) */
-export const supabase: SupabaseClient | null = isRemoteBackend
+export const supabase: SupabaseClient | null = isBackendConfigured
   ? createClient(backendConfig.supabaseUrl, backendConfig.supabaseAnonKey)
   : null;
 

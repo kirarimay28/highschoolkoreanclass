@@ -5,6 +5,7 @@ import { MedallionButton, type MedallionState } from '@/components/common/Medall
 import { CloudDivider } from '@/components/motifs/CloudDivider';
 import { lobbyMenu, type LobbySubItem } from '@/config/lobbyMenu';
 import { roleLabels, withHonorific } from '@/config/roles';
+import { useDesignGate } from '@/components/professor/DesignNotes';
 import { useCurrentUser } from '@/context/AuthContext';
 
 /** 선택 연출이 끝나고 페이지로 넘어가기까지 (ms) */
@@ -14,6 +15,7 @@ export function LobbyPage() {
   const user = useCurrentUser();
   const navigate = useNavigate();
   const reduce = useReducedMotion() ?? false;
+  const gate = useDesignGate();
   const items = lobbyMenu.filter((m) => m.showInLobby && (!m.roles || m.roles.includes(user.role)));
 
   const [selectedId, setSelectedId] = useState<string | null>(null);
@@ -43,13 +45,17 @@ export function LobbyPage() {
     const item = items.find((m) => m.id === id)!;
     if (item.children?.length) {
       if (selectedId === id) return collapse(); // 다시 누르면 접기
-      const r = medalRefs.current[id]?.getBoundingClientRect();
-      setOrigin(r ? { x: r.left + r.width / 2, y: r.top + r.height / 2 } : null);
-      setSelectedId(id);
-      return;
+      // 교수자: 펼치기 전에 설계 의도
+      return gate(`lobby:${id}`, () => {
+        const r = medalRefs.current[id]?.getBoundingClientRect();
+        setOrigin(r ? { x: r.left + r.width / 2, y: r.top + r.height / 2 } : null);
+        setSelectedId(id);
+      });
     }
-    setSelectedId(id);
-    go(item.path);
+    gate(`lobby:${id}`, () => {
+      setSelectedId(id);
+      go(item.path);
+    });
   };
 
   const selectChild = (child: LobbySubItem) => {

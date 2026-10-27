@@ -105,7 +105,7 @@ export const lobbyMenu: LobbyMenuItem[] = [
     icon: 'users',
     tone: 'gold',
     path: '/students',
-    roles: ['teacher', 'professor'],
+    roles: ['teacher'],
   },
   {
     id: 'tutorial',

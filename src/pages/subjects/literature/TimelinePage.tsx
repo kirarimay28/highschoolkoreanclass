@@ -38,7 +38,7 @@ export function TimelinePage() {
       accent={subject.accent}
     >
       <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
-        <TabBar items={timelineMaps.map((m) => ({ id: m.id, label: m.label }))} value={tab} onChange={setTab} size="sm" touch={!wide} className="max-w-xl" />
+        <TabBar items={timelineMaps.map((m) => ({ id: m.id, label: m.label }))} value={tab} onChange={setTab} noteScope="literature:timeline" size="sm" touch={!wide} className="max-w-xl" />
         {current.ready && hasArrows && wide && (
           <RoyalButton variant="secondary" size="sm" icon="sparkles" active={showInfluences} onClick={() => setShowInfluences((v) => !v)}>
             영향 관계 보기

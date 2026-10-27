@@ -8,13 +8,15 @@ import { BackgroundDecor } from '@/components/motifs/BackgroundDecor';
 import { Emblem } from '@/components/motifs/Emblem';
 import { appConfig } from '@/config/app';
 import { roleLabels } from '@/config/roles';
+import { DesignNoteProvider } from '@/components/professor/DesignNotes';
+import { ProfessorBar } from '@/components/professor/ProfessorBar';
 import { useAuth } from '@/context/AuthContext';
 import { NotificationBell } from './NotificationBell';
 import { SideDrawer } from './SideDrawer';
 
 /** 로그인 후 모든 화면의 공통 틀: 유리 상단 바 + 메뉴 서랍 + 본문 */
 export function AppLayout() {
-  const { user, signOut } = useAuth();
+  const { user, account, signOut, isProfessor, professorView } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
   const [drawerOpen, setDrawerOpen] = useState(false);
@@ -29,6 +31,7 @@ export function AppLayout() {
   };
 
   return (
+    <DesignNoteProvider>
     <div className="relative isolate flex min-h-dvh flex-col">
       <BackgroundDecor crane={false} />
 
@@ -54,12 +57,12 @@ export function AppLayout() {
           {user && (
             <div className="flex items-center gap-1 sm:gap-3">
               <NotificationBell user={user} />
-              <Avatar name={user.name} size={34} className="hidden sm:flex" />
+              <Avatar name={isProfessor ? account?.name ?? '' : user.name} size={34} className="hidden sm:flex" />
               <div className="text-right leading-tight sm:text-left">
-                <p className="max-w-[8rem] truncate text-sm font-semibold sm:max-w-none">{user.name}</p>
+                <p className="max-w-[8rem] truncate text-sm font-semibold sm:max-w-none">{isProfessor ? account?.name : user.name}</p>
                 <p className="text-xs text-gold-dark">
-                  {roleLabels[user.role]}
-                  {user.meta && <span className="hidden sm:inline"> · {user.meta}</span>}
+                  {isProfessor ? '교수자' : roleLabels[user.role]}
+                  {!isProfessor && user.meta && <span className="hidden sm:inline"> · {user.meta}</span>}
                 </p>
               </div>
               <RoyalButton variant="ghost" size="sm" icon="logout" onClick={handleLogout} aria-label="로그아웃">
@@ -68,12 +71,14 @@ export function AppLayout() {
             </div>
           )}
         </div>
+        {isProfessor && <ProfessorBar />}
       </header>
 
       <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-6 sm:py-8">
         {/* 화면이 바뀌어도 같은 layoutId 메달이 이어지도록 */}
         <LayoutGroup>
-          <Outlet />
+          {/* 교수자가 시점을 바꾸면 화면을 새로 그림 */}
+          <Outlet key={isProfessor ? professorView : undefined} />
         </LayoutGroup>
       </main>
 
@@ -81,5 +86,6 @@ export function AppLayout() {
 
       {user && <SideDrawer open={drawerOpen} user={user} onClose={closeDrawer} onLogout={handleLogout} />}
     </div>
+    </DesignNoteProvider>
   );
 }

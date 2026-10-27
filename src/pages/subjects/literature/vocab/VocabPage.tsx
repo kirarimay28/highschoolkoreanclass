@@ -56,7 +56,7 @@ export function VocabPage() {
         ))}
       </div>
 
-      <TabBar items={tabs} value={tab} onChange={changeTab} touch className="mb-5 max-w-lg" />
+      <TabBar items={tabs} value={tab} onChange={changeTab} touch noteScope="literature:vocab" className="mb-5 max-w-lg" />
 
       {/* 탭은 보이는 것만 그림 (KoreanEdu 050cf23: 숨긴 탭의 오류가 화면 전체를 하얗게 만들던 문제) */}
       {tab === 'book' ? (
