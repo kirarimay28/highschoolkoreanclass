@@ -37,17 +37,22 @@ export function LoginPage() {
         <span className="glass flex h-28 w-28 items-center justify-center rounded-tile border border-white shadow-soft sm:h-32 sm:w-32">
           <Emblem size={84} animated />
         </span>
-        <h1 className="title-gradient mt-6 pb-1 text-5xl font-bold tracking-tight drop-shadow-[0_6px_18px_rgb(var(--color-royal)/0.18)] sm:text-6xl">
-          {appConfig.name}
+        <h1 className="mt-6 flex flex-col items-center">
+          <span className="font-serif text-base font-bold tracking-[0.3em] text-gold-dark sm:text-lg">{appConfig.school}</span>
+          <span className="title-gradient mt-1 pb-1 text-5xl font-bold tracking-tight drop-shadow-[0_6px_18px_rgb(var(--color-royal)/0.18)] sm:text-6xl">
+            {appConfig.name}
+          </span>
         </h1>
-        <p className="mt-1 font-serif text-sm tracking-[0.4em] text-gold-dark">{appConfig.hanja}</p>
+        <p className="mt-1 text-balance font-serif text-xs tracking-[0.3em] text-gold-dark sm:text-sm sm:tracking-[0.35em]">
+          {appConfig.hanja}
+        </p>
         <span className="my-3 h-1.5 w-1.5 rounded-full bg-royal-light/70" aria-hidden />
         <p className="text-[15px] font-medium tracking-[0.15em] text-royal/80">{appConfig.slogan}</p>
       </div>
 
       {/* 역할 선택 + 입력 폼 */}
       <section className="royal-card mt-8 w-full max-w-lg p-4 sm:p-6">
-        <p className="mb-3 text-center text-sm text-ink-soft">{appConfig.subtitle} · 역할을 골라 입장하세요</p>
+        <p className="mb-3 text-center text-sm text-ink-soft">역할을 골라 입장하세요</p>
         <div className="grid gap-2" style={{ gridTemplateColumns: `repeat(${loginRoles.length}, minmax(0, 1fr))` }}>
           {loginRoles.map((r) => {
             const selected = r.id === role;

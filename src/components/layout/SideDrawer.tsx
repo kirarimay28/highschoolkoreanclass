@@ -62,8 +62,8 @@ export function SideDrawer({ open, user, onClose, onLogout }: SideDrawerProps) {
               <Emblem size={40} />
             </span>
             <div>
+              <p className="font-serif text-xs font-bold tracking-[0.2em] text-gold-dark">{appConfig.school}</p>
               <p className="font-serif text-xl font-bold text-royal-deep">{appConfig.name}</p>
-              <p className="text-xs text-royal/80">{appConfig.subtitle}</p>
             </div>
           </div>
 

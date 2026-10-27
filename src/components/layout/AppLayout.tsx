@@ -44,8 +44,8 @@ export function AppLayout() {
             <Link to="/lobby" className="flex min-w-0 items-center gap-2.5">
               <Emblem size={34} />
               <div className="min-w-0 leading-tight">
+                <p className="truncate font-serif text-[11px] font-bold tracking-[0.2em] text-gold-dark">{appConfig.school}</p>
                 <p className="truncate font-serif text-lg font-bold text-royal-deep">{appConfig.name}</p>
-                <p className="hidden text-xs text-ink-soft sm:block">{appConfig.subtitle}</p>
               </div>
             </Link>
           </div>
