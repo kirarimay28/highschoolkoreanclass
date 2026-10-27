@@ -61,6 +61,7 @@ export const subjects: SubjectConfig[] = [
     // 대추빛 홍색 + 먹 — 차분한 서재 느낌
     accent: { accent: '118 36 44', gold: '176 140 58', tint: '150 118 104' },
     sections: [
+      { id: 'diy', title: 'DIY 구조도', description: '함께 읽은 지문을 문단 구조도·내용 구조도로 스스로 정리해요', icon: 'map', path: 'diy' },
       { id: 'lessons', title: '수업 진도', description: '읽기 전략과 쓰기 과정 차시별 정리', icon: 'book' },
       { id: 'activities', title: '활동지', description: '글 구조 분석·개요 짜기 활동', icon: 'notebook' },
       { id: 'assignments', title: '과제', description: '논설문·보고서 과제와 마감일', icon: 'todo' },

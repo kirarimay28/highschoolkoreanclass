@@ -12,6 +12,8 @@ export const permissions = {
   changeFeedbackStatus: ['teacher', 'professor'],
   /** 게시판 익명 글의 실명 열람 */
   seeAnonymousAuthor: ['teacher', 'professor'],
+  /** DIY 구조도: 학생 제출 열람·코멘트·갤러리 공유·지문 관리 */
+  manageStructure: ['teacher', 'professor'],
   /** 학생 등록·삭제 */
   manageStudents: ['teacher', 'professor'],
   /** 게시판 글 삭제(타인 글 포함) */

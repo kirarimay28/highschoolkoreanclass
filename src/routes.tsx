@@ -1,3 +1,4 @@
+import { Suspense, lazy } from 'react';
 import { Navigate, Route, Routes, useParams, useSearchParams } from 'react-router-dom';
 import { AppLayout } from '@/components/layout/AppLayout';
 import { ProtectedRoute } from '@/components/layout/ProtectedRoute';
@@ -14,6 +15,9 @@ import { TimelinePage } from '@/pages/subjects/literature/TimelinePage';
 import { SubjectPage } from '@/pages/subjects/SubjectPage';
 import { TutorialPage } from '@/pages/tutorial/TutorialPage';
 
+// 무거운 페이지(React Flow)는 열 때만 불러옴
+const DiyStructurePage = lazy(() => import('@/pages/subjects/reading/DiyStructurePage').then((m) => ({ default: m.DiyStructurePage })));
+
 /** URL ↔ 페이지 연결. 로비 메뉴(src/config/lobbyMenu.ts)의 path 와 맞춰 주세요. */
 export function AppRoutes() {
   return (
@@ -24,6 +28,14 @@ export function AppRoutes() {
           <Route path="/lobby" element={<LobbyPage />} />
           <Route path="/subject/:subjectId" element={<SubjectPage />} />
           <Route path="/subject/literature/timeline" element={<TimelinePage />} />
+          <Route
+            path="/subject/reading-writing/diy"
+            element={
+              <Suspense fallback={<p className="py-20 text-center text-sm text-ink-faint">구조도 작업판을 불러오는 중…</p>}>
+                <DiyStructurePage />
+              </Suspense>
+            }
+          />
           {/* 예전 주소 호환 */}
           <Route path="/subjects" element={<Navigate to="/lobby?expand=subjects" replace />} />
           <Route path="/subjects/:subjectId" element={<LegacySubjectRedirect />} />

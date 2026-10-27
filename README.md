@@ -64,5 +64,5 @@ src/
 - `VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY` 가 있으면 Supabase 에 저장 (모든 기기 공유)
 - 없으면 이 브라우저(localStorage)에만 저장 (개발·미리보기용, 샘플 데이터 포함)
 - 설정 방법: [`supabase/README.md`](supabase/README.md)
-- 이미 schema.sql 을 실행한 프로젝트에 **선생님께 쪽지**를 추가하려면 [`supabase/messages.sql`](supabase/messages.sql) 을 한 번 더 실행 · DB 구조와 보안 규칙: [`supabase/schema.sql`](supabase/schema.sql)
+- 이미 schema.sql 을 실행한 프로젝트에 기능을 추가할 때: **선생님께 쪽지** [`supabase/messages.sql`](supabase/messages.sql), **DIY 구조도** [`supabase/structure.sql`](supabase/structure.sql) 을 한 번씩 실행 · DB 구조와 보안 규칙: [`supabase/schema.sql`](supabase/schema.sql)
 - 화면은 `src/services/*` 만 호출하고, Supabase 구현은 `src/services/remote/*` 에 있습니다.
